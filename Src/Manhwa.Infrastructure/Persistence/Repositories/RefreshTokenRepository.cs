@@ -1,5 +1,6 @@
 ﻿using Manhwa.Domain.Entities;
 using Manhwa.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,20 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
         public async Task AddAsync(RefreshToken refreshToken, CancellationToken cancellationToken = default)
         {
             await _context.RefreshTokens.AddAsync(refreshToken, cancellationToken);
+        }
+        public async Task<RefreshToken?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+        {
+            return await _context.RefreshTokens.FirstOrDefaultAsync(rf => rf.Token == token , cancellationToken);
+        }
+        public async Task<RefreshToken?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+        {
+            return await _context.RefreshTokens.FindAsync( id , cancellationToken);
+        }
+        public async Task DeleteAllUserTokensAsync(long userId, CancellationToken ct)
+        {
+            await _context.RefreshTokens
+                .Where(rt => rt.UserId == userId)
+                .ExecuteDeleteAsync(ct);
         }
     }
 }

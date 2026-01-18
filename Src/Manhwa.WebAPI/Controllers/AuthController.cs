@@ -62,7 +62,7 @@ namespace Manhwa.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api",
+                Path = "/api/auth/refresh-token",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
@@ -88,7 +88,7 @@ namespace Manhwa.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/auth/refresh-token",
+                Path = "/api",
                 Expires = DateTimeOffset.UtcNow.AddMinutes(15)
             };
             var refreshCookieOptions = new CookieOptions
