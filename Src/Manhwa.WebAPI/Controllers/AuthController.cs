@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Manhwa.Application.Features.Users.Auth.Commands.Login;
 using Manhwa.WebAPI.Extensions;
+using Manhwa.Application.Features.Users.Auth.Commands.RefreshToken;
 namespace Manhwa.WebAPI.Controllers
 {
     [ApiController]
@@ -61,12 +62,48 @@ namespace Manhwa.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/auth/refresh-token",
+                Path = "/api",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
             Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
             return Ok(new {result.userId, result.Username, result.Email});
         }
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var oldRefreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(oldRefreshToken))
+            {
+                return Unauthorized(new { Message = "Phiên đăng nhập không tồn tại." });
+            }
+            var command = new RefreshTokenCommand
+            {
+                RefreshToken = oldRefreshToken
+            };
+            var result = await _mediator.Send(command);
+
+            var accessCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/auth/refresh-token",
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            };
+            var refreshCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/api/auth/refresh-token",
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
+            Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
+
+            return Ok(new { Message = result.Massage });
+        }
+
     }
 }
