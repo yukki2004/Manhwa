@@ -34,5 +34,11 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                 .Where(rt => rt.UserId == userId)
                 .ExecuteDeleteAsync(ct);
         }
+        public async Task MarkTokenAsUsedAsync(string token, CancellationToken ct)
+        {
+            await _context.RefreshTokens
+                .Where(rt => rt.Token == token)
+                .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsUsed, true), ct);
+        }
     }
 }

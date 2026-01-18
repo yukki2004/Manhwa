@@ -13,6 +13,7 @@ namespace Manhwa.Domain.Repositories
         Task<RefreshToken?> GetByIdAsync(long id, CancellationToken ct = default);
         Task<RefreshToken?> GetByTokenAsync(string token, CancellationToken ct = default);
         Task DeleteAllUserTokensAsync(long userId, CancellationToken ct);
+        Task MarkTokenAsUsedAsync(string token, CancellationToken ct);
 
     }
 }

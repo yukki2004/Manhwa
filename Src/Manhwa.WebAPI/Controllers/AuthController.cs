@@ -5,6 +5,9 @@ using MediatR;
 using Manhwa.Application.Features.Users.Auth.Commands.Login;
 using Manhwa.WebAPI.Extensions;
 using Manhwa.Application.Features.Users.Auth.Commands.RefreshToken;
+using Microsoft.AspNetCore.Authorization;
+using Manhwa.Application.Features.Users.Auth.Commands.Logout;
+using System.Security.Claims;
 namespace Manhwa.WebAPI.Controllers
 {
     [ApiController]
@@ -62,7 +65,7 @@ namespace Manhwa.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/auth/refresh-token",
+                Path = "/api/auth",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
@@ -96,13 +99,37 @@ namespace Manhwa.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/api/auth/refresh-token",
+                Path = "/api/auth",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
             Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
 
             return Ok(new { Message = result.Massage });
+        }
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized(new { Message = "Phiên đăng nhập không tồn tại." });
+            }
+            var command = new LogoutCommand
+            {
+                UserId = userId,
+                RefreshToken = refreshToken,
+                IpAddress = HttpContext.GetRemoteIpAddress(),
+                UserAgent = Request.Headers["User-Agent"].ToString()
+            };
+            await _mediator.Send(command);
+
+            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/api" });
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/auth" });
+
+            return Ok(new { Message = "Đã đăng xuất thành công." });
         }
 
     }

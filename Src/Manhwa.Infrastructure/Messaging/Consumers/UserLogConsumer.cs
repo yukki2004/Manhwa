@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Infrastructure.Messaging.Consumers
 {
-    public class UserLogConsumer : IConsumer<UserRegisteredIntegrationEvent>, IConsumer<UserLoggedInIntegrationEvent>
+    public class UserLogConsumer : IConsumer<UserRegisteredIntegrationEvent>, IConsumer<UserLoggedInIntegrationEvent>,
+        IConsumer<UserLoggedOutIntegrationEvent>
     {
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -31,6 +32,11 @@ namespace Manhwa.Infrastructure.Messaging.Consumers
         {
             var msg = context.Message;
             await SaveToDatabase(msg.UserId, msg.IpAddress, msg.UserAgent, msg.CreateAt, UserLogAction.Login, context.CancellationToken);
+        }
+        public async Task Consume(ConsumeContext<UserLoggedOutIntegrationEvent> context)
+        {
+            var msg = context.Message;
+            await SaveToDatabase(msg.UserId, msg.IpAddress, msg.UserAgent, msg.CreateAt, UserLogAction.Logout, context.CancellationToken);
         }
         private async Task SaveToDatabase(long userId, string ip, string ua, DateTimeOffset createdAt, UserLogAction action, CancellationToken ct)
         {
