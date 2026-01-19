@@ -29,7 +29,7 @@ namespace Manhwa.WebAPI.Controllers
             {
                 Username = request.Username,
                 Email = request.Email,
-                Password =  request.Password,
+                Password = request.Password,
                 IpAddress = ipAddress,
                 UserAgent = userAgent
             };
@@ -53,7 +53,7 @@ namespace Manhwa.WebAPI.Controllers
             // Thiết lập Cookie bảo mật cho AccessToken
             var accessCookieOptions = new CookieOptions
             {
-                HttpOnly = true,   
+                HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Path = "/api",
@@ -71,7 +71,7 @@ namespace Manhwa.WebAPI.Controllers
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
             Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
-            return Ok(new {result.userId, result.Username, result.Email});
+            return Ok(new { result.userId, result.Username, result.Email });
         }
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
@@ -136,13 +136,26 @@ namespace Manhwa.WebAPI.Controllers
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
         {
             var result = await _mediator.Send(command);
-            if(result)
+            if (result)
             {
                 return Ok(new { Message = "Mã xác nhận đã được gửi đến email của bạn." });
             }
             else
             {
                 return BadRequest(new { Message = "Yêu cầu đặt lại mật khẩu thất bại." });
+            }
+        }
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] Application.Features.Users.Auth.Commands.VerifyOtp.VerifyOtpCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result)
+            {
+                return Ok(new { Message = "Xác thực OTP thành công." });
+            }
+            else
+            {
+                return BadRequest(new { Message = "Xác thực OTP thất bại." });
             }
         }
     }
