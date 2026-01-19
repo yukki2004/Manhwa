@@ -158,5 +158,29 @@ namespace Manhwa.WebAPI.Controllers
                 return BadRequest(new { Message = "Xác thực OTP thất bại." });
             }
         }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] Application.Features.Users.Auth.Commands.ResetPassword.ResetPasswordRequest request)
+        {
+            var ipAddress = HttpContext.GetRemoteIpAddress();
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var commandWithMetadata = new Application.Features.Users.Auth.Commands.ResetPassword.ResetPasswordCommand
+            {
+                Email = request.Email,
+                Otp = request.Otp,
+                NewPassword = request.NewPassword,
+                ComfirmPassword = request.ComfirmPassword,
+                IpAddress = ipAddress,
+                UserAgent = userAgent
+            };
+            var result = await _mediator.Send(commandWithMetadata);
+            if (result)
+            {
+                return Ok(new { Message = "Đặt lại mật khẩu thành công." });
+            }
+            else
+            {
+                return BadRequest(new { Message = "Đặt lại mật khẩu thất bại." });
+            }
+        }
     }
 }

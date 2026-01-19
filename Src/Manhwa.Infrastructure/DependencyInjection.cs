@@ -72,6 +72,7 @@ namespace Manhwa.Infrastructure
             {
                 x.AddConsumer<UserLogConsumer>();
                 x.AddConsumer<SendOtpEmailConsumer>();
+                x.AddConsumer<PasswordNotificationConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -90,6 +91,11 @@ namespace Manhwa.Infrastructure
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
                         e.ConfigureConsumer<SendOtpEmailConsumer>(context);
+                    });
+                    cfg.ReceiveEndpoint("password-notification-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<PasswordNotificationConsumer>(context);
                     });
                 });
             });
