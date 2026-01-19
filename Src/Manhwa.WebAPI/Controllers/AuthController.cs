@@ -8,6 +8,7 @@ using Manhwa.Application.Features.Users.Auth.Commands.RefreshToken;
 using Microsoft.AspNetCore.Authorization;
 using Manhwa.Application.Features.Users.Auth.Commands.Logout;
 using System.Security.Claims;
+using Manhwa.Application.Features.Users.Auth.Commands.ForgotPassword;
 namespace Manhwa.WebAPI.Controllers
 {
     [ApiController]
@@ -131,6 +132,18 @@ namespace Manhwa.WebAPI.Controllers
 
             return Ok(new { Message = "Đã đăng xuất thành công." });
         }
-
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if(result)
+            {
+                return Ok(new { Message = "Mã xác nhận đã được gửi đến email của bạn." });
+            }
+            else
+            {
+                return BadRequest(new { Message = "Yêu cầu đặt lại mật khẩu thất bại." });
+            }
+        }
     }
 }

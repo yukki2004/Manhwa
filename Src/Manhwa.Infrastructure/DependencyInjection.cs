@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Manhwa.Application.Common.Interfaces;
 using Manhwa.Domain.Repositories;
+using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.Identity;
 using Manhwa.Infrastructure.Messaging.Consumers;
 using Manhwa.Infrastructure.Persistence;
@@ -16,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 namespace Manhwa.Infrastructure
 {
     public static class DependencyInjection
@@ -69,6 +71,7 @@ namespace Manhwa.Infrastructure
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<UserLogConsumer>();
+                x.AddConsumer<SendOtpEmailConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -83,7 +86,29 @@ namespace Manhwa.Infrastructure
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                         e.ConfigureConsumer<UserLogConsumer>(context);
                     });
+                    cfg.ReceiveEndpoint("send-otp-email-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<SendOtpEmailConsumer>(context);
+                    });
                 });
+            });
+            // cấu hình redis
+            var hostRedis = configuration["RedisSettings:Host"];
+            var portRedis = configuration["RedisSettings:Port"];
+            var userRedis = configuration["RedisSettings:User"];
+            var passwordRedis = configuration["RedisSettings:Password"];
+            var instanceName = configuration["RedisSettings:InstanceName"];
+            var optionsRedis = new ConfigurationOptions
+            {
+                EndPoints = { { hostRedis!, int.Parse(portRedis!) } },
+                User = userRedis,
+                Password = passwordRedis,
+                AbortOnConnectFail = false
+            };
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                return ConnectionMultiplexer.Connect(optionsRedis);
             });
             // cấu hình các interface
             services.AddScoped<IUserRepository, UserRepository>();
@@ -91,6 +116,8 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICacheService, CacheService>();
+
             return services;
             
         }
