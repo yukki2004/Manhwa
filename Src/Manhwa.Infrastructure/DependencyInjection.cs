@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Amazon.S3;
 using Manhwa.Application.Common.Interfaces;
 using Manhwa.Domain.Repositories;
 using Manhwa.Infrastructure.Caching;
+using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Identity;
 using Manhwa.Infrastructure.Messaging.Consumers;
 using Manhwa.Infrastructure.Persistence;
@@ -116,6 +118,20 @@ namespace Manhwa.Infrastructure
             {
                 return ConnectionMultiplexer.Connect(optionsRedis);
             });
+            // cấu hình Cloudflare R2
+            var r2Options = configuration.GetSection(CloudflareR2Options.SectionName);
+            services.Configure<CloudflareR2Options>(r2Options);
+
+            services.AddSingleton<IAmazonS3>(sp =>
+            {
+                var options = r2Options.Get<CloudflareR2Options>()!;
+                return new AmazonS3Client(
+                    options.AccessKeyId,
+                    options.SecretAccessKey,
+                    new AmazonS3Config { ServiceURL = options.ServiceUrl }
+                );
+            });
+
             // cấu hình các interface
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserLogRepository, UserLogRepository>();
@@ -123,6 +139,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IStorageService, CloudflareR2Service>();
 
             return services;
             

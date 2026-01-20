@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="4.0.17.2" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="MassTransit" Version="9.0.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="9.0.0" />
@@ -18,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="FileStorage\" />
     <Folder Include="Persistence\Queries\" />
   </ItemGroup>
 

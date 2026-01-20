@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
+﻿using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
+using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -32,9 +33,29 @@ namespace Manhwa.WebAPI.Controllers
             var result = await _mediator.Send(command, ct);
             if (!result)
             {
-                return BadRequest("Lỗi khi cập nhật profile.");
+                return BadRequest("Lỗi khi cập nhật thông tin.");
             }
-            return Ok("Cập nhật thông tin thành c.");
+            return Ok("Cập nhật thông tin thành công.");
+        }
+        [HttpPut("update-avt")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvt([FromForm] UpdateAvtRequest request, CancellationToken ct)
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return Unauthorized();
+            var command = new UpdateAvtCommand
+            {
+                UserId = (long)userId,
+                File = request.File,
+                IpAddress = HttpContext.GetRemoteIpAddress(),
+                UserAgent = Request.Headers["User-Agent"].ToString()
+            };
+            var result = await _mediator.Send(command, ct);
+            if (!result)
+            {
+                return BadRequest("Lỗi khi cập nhật ảnh đại diện.");
+            }
+            return Ok("Cập nhật ảnh đại diện thành công.");
         }
     }
 }

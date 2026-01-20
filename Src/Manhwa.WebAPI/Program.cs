@@ -1,7 +1,9 @@
 
 using Manhwa.Application;
 using Manhwa.Infrastructure;
+using Manhwa.Infrastructure.FileStorage;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.FileProviders;
 
 namespace Manhwa.WebAPI
 {
@@ -21,6 +23,7 @@ namespace Manhwa.WebAPI
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
