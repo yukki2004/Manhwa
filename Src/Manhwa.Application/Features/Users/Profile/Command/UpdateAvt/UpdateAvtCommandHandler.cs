@@ -32,6 +32,7 @@ namespace Manhwa.Application.Features.Users.Profile.Command.UpdateAvt
         {
             var user = await _userRepository.GetByIdAsync(command.UserId, ct);
             if (user == null) throw new Exception("Không tìm thấy người dùng.");
+            if(!user.IsActive) throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa không thể cập nhật ảnh đại diện.");
             var path = $"users/{user.UserId}/avatar/avatar.webp";
             using var stream = command.File.OpenReadStream();
             var relativePath = await _storageService.UploadAsync(stream, path, "image/webp", false, ct);
