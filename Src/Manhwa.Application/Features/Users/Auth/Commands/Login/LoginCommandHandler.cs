@@ -39,6 +39,10 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Login
             {
                 throw new UnauthorizedAccessException("tài khoản hoặc mật khẩu không đúng");
             }
+            if(!userLogin.IsActive)
+            {
+                throw new UnauthorizedAccessException("tài khoản đã bị khóa");
+            }
             var accessToken = _identityService.GenerateAccessToken(userLogin);
             var refreshToken = _identityService.GenerateRefreshToken();
             var userRefreshToken = new Domain.Entities.RefreshToken
