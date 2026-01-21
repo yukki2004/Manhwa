@@ -1,5 +1,6 @@
 
 using Manhwa.Application;
+using Manhwa.Application.Common.Extensions;
 using Manhwa.Infrastructure;
 using Manhwa.Infrastructure.FileStorage;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -21,7 +22,7 @@ namespace Manhwa.WebAPI
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            UrlHelper.BaseUrl = builder.Configuration["ApiBaseUrl"];
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

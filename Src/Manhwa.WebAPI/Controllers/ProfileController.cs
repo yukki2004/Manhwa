@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Features.Users.Profile.Command.ChangePassword;
 using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
 using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
+using Manhwa.Application.Features.Users.Profile.Queries.GetMyProfile;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,7 @@ namespace Manhwa.WebAPI.Controllers
         {
             _mediator = mediator;
         }
-    
+
         [HttpPut("update-description")]
         [Authorize]
         public async Task<IActionResult> UpdateDescription([FromBody] UpdateProfileRequest request, CancellationToken ct)
@@ -79,6 +80,19 @@ namespace Manhwa.WebAPI.Controllers
                 return BadRequest("Lỗi khi đổi mật khẩu.");
             }
             return Ok("Đổi mật khẩu thành công.");
+        }
+        [HttpGet("get-my-profile")]
+        [Authorize]
+        public async Task<IActionResult> GetMyProfile(CancellationToken ct)
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return Unauthorized();
+            var query = new GetMyProfileCommand
+            {
+                UserId = (long)userId
+            };
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
         }
     }
 }
