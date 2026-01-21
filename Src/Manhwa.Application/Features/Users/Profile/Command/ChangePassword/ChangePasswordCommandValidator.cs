@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Application.Features.Users.Profile.Command.ChangePassword
 {
-    class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
+    public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
     {
         public ChangePasswordCommandValidator()
         {
-            RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Mật khẩu không được để trống.")
-                .MinimumLength(6).WithMessage("Mật khẩu phải có ít nhất 6 ký tự.");
+            RuleFor(x => x.OldPassword)
+                  .NotEmpty().WithMessage("Mật khẩu cũ không được để trống.");
+            RuleFor(x => x.NewPassword)
+                .NotEmpty().WithMessage("Mật khẩu mới không được để trống.")
+                .MinimumLength(6).WithMessage("Mật khẩu mới phải có ít nhất 6 ký tự.")
+                .NotEqual(x => x.OldPassword).WithMessage("Mật khẩu mới không được trùng với mật khẩu cũ.");
             RuleFor(x => x.ConfirmPassword)
-                .Equal(x => x.Password).WithMessage("Mật khẩu xác nhận không khớp.");
+                .NotEmpty().WithMessage("Vui lòng xác nhận lại mật khẩu mới.")
+                .Equal(x => x.NewPassword).WithMessage("Mật khẩu xác nhận không khớp.");
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Manhwa.WebAPI.Controllers
             }
             return Ok("Cập nhật ảnh đại diện thành công.");
         }
-        [HttpPut("change-passwword")]
+        [HttpPut("change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken ct)
         {
@@ -67,7 +67,9 @@ namespace Manhwa.WebAPI.Controllers
             var command = new ChangePasswordCommand
             {
                 UserId = (long)userId,
-                Password = request.Password,
+                OldPassword = request.OldPassword,
+                NewPassword = request.NewPassword,
+                ConfirmPassword = request.ConfirmPassword,
                 IpAddress = HttpContext.GetRemoteIpAddress(),
                 UserAgent = Request.Headers["User-Agent"].ToString()
             };

@@ -1,5 +1,6 @@
 ﻿using Manhwa.Application.Common.Interfaces;
 using Manhwa.Application.Common.Messaging;
+using Manhwa.Domain.Enums;
 using Manhwa.Domain.Repositories;
 using MassTransit;
 using MediatR;
@@ -29,9 +30,17 @@ namespace Manhwa.Application.Features.Users.Profile.Command.ChangePassword
             var user = await _userRepository.GetByIdAsync(command.UserId, cancellationToken);
             if(user == null)
             {
-                throw new Exception("User not found");
+                throw new Exception("Người dùng không tồn tại");
             }
-            user.PasswordHash = _passwordHasher.Hash(command.Password);
+            if(user.LoginType == LoginType.Google)
+            {
+                throw new Exception("Không thể đổi mật khẩu khi đăng nhập bằng google");
+            }
+            if(!_passwordHasher.Verify(command.OldPassword, user.PasswordHash))
+            {
+                throw new Exception("Mật khẩu cũ không khớp");
+            }
+            user.PasswordHash = _passwordHasher.Hash(command.NewPassword);
             user.UpdatedAt = DateTimeOffset.UtcNow;
             _userRepository.Update(user);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -8,7 +8,8 @@ namespace Manhwa.Application.Features.Users.Profile.Command.ChangePassword
 {
     public class ChangePasswordRequest
     {
-        public string Password { get; set; } = null!;
+        public string OldPassword { get; set; } = null!;
+        public string NewPassword { get; set; } = null!;
         public string ConfirmPassword { get; set; } = null!;
     }
 }
