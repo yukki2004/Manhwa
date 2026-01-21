@@ -16,12 +16,12 @@ namespace Manhwa.WebAPI.Controllers.Admin
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> ToggleStatus(long id, [FromBody] bool isActive)
+        public async Task<IActionResult> ToggleStatus(long id, [FromBody] UpdateUserStatusRequest request)
         {
             var result = await _mediator.Send(new UpdateUserStatusCommand
             {
                 UserId = id,
-                IsActive = isActive,
+                IsActive = request.IsActive,
                 IpAddress = HttpContext.GetRemoteIpAddress(),
                 UserAgent = Request.Headers["User-Agent"].ToString()
             });
@@ -29,7 +29,7 @@ namespace Manhwa.WebAPI.Controllers.Admin
             return Ok(new
             {
                 Success = result,
-                Message = isActive ? "Mở khóa thành công." : "Đã khóa và đăng xuất khỏi các thiết bị."
+                Message = request.IsActive ? "Mở khóa thành công." : "Đã khóa và đăng xuất khỏi các thiết bị."
             });
         }
     }
