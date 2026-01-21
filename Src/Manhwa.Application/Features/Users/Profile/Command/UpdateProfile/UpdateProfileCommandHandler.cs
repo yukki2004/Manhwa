@@ -29,6 +29,10 @@ namespace Manhwa.Application.Features.Users.Profile.Command.UpdateProfile
             {
                 return false;
             }
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa không thể cập nhật hồ sơ.");
+            }
             user.Description = request.Description;
             user.UpdatedAt = DateTimeOffset.UtcNow;
             _userRepository.Update(user);
