@@ -36,6 +36,10 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.ForgotPassword
             {
                 throw new Exception("Không tìm thấy người dùng với email đã cung cấp.");
             }
+            if(!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa không thể đặt lại mật khẩu.");
+            }
             string otpCode = new Random().Next(0, 1000000).ToString("D6");
             await _cacheService.SetAsync(otpKey, otpCode, TimeSpan.FromMinutes(5), ct);
             await _cacheService.SetAsync(lockKey, "1", TimeSpan.FromSeconds(60), ct);
