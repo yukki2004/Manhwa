@@ -2,6 +2,7 @@
 using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
 using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
 using Manhwa.Application.Features.Users.Profile.Queries.GetMyProfile;
+using Manhwa.Application.Features.Users.Profile.Queries.GetUserProfile;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -92,6 +93,20 @@ namespace Manhwa.WebAPI.Controllers
                 UserId = (long)userId
             };
             var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+        [HttpGet("get-user-profile/{username}")]
+        public async Task<IActionResult> GetUserProfile([FromRoute] string username, CancellationToken ct)
+        {
+            var query = new GetUserProfileCommand
+            {
+                Username = username
+            };
+            var result = await _mediator.Send(query, ct);
+            if (result == null)
+            {
+                return NotFound("Không tìm thấy người dùng.");
+            }
             return Ok(result);
         }
     }
