@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
+﻿using Manhwa.Application.Features.Users.Profile.Command.ChangePassword;
+using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
 using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -56,6 +57,26 @@ namespace Manhwa.WebAPI.Controllers
                 return BadRequest("Lỗi khi cập nhật ảnh đại diện.");
             }
             return Ok("Cập nhật ảnh đại diện thành công.");
+        }
+        [HttpPut("change-passwword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken ct)
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return Unauthorized();
+            var command = new ChangePasswordCommand
+            {
+                UserId = (long)userId,
+                Password = request.Password,
+                IpAddress = HttpContext.GetRemoteIpAddress(),
+                UserAgent = Request.Headers["User-Agent"].ToString()
+            };
+            var result = await _mediator.Send(command, ct);
+            if (!result)
+            {
+                return BadRequest("Lỗi khi đổi mật khẩu.");
+            }
+            return Ok("Đổi mật khẩu thành công.");
         }
     }
 }

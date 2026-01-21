@@ -15,7 +15,6 @@
                 return ip.MapToIPv4().ToString();
             }
 
-            // Nếu là địa chỉ loopback IPv6 (::1)
             if (ip.ToString() == "::1")
             {
                 return "127.0.0.1";
