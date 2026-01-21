@@ -32,6 +32,10 @@ namespace Manhwa.Application.Features.Users.Profile.Command.ChangePassword
             {
                 throw new Exception("Người dùng không tồn tại");
             }
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa không thể đổi mật khẩu");
+            }
             if(user.LoginType == LoginType.Google)
             {
                 throw new Exception("Không thể đổi mật khẩu khi đăng nhập bằng google");
