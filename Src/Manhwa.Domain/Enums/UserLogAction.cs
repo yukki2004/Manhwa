@@ -13,7 +13,9 @@ namespace Manhwa.Domain.Enums
         Register = 2,
         ResetPassword = 3,
         UpdateProfile = 4,
-        FollowStory = 5
-        
+        FollowStory = 5,
+        LockAccount = 6,
+        UnlockAccount = 7
+
     }
 }

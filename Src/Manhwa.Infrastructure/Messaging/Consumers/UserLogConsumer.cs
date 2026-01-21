@@ -16,7 +16,8 @@ namespace Manhwa.Infrastructure.Messaging.Consumers
     public class UserLogConsumer : IConsumer<UserRegisteredIntegrationEvent>, IConsumer<UserLoggedInIntegrationEvent>,
         IConsumer<UserLoggedOutIntegrationEvent>,
         IConsumer<UserPasswordResetIntegrationEvent>,
-        IConsumer<ProfileUpdatedIntegrationEvent>
+        IConsumer<ProfileUpdatedIntegrationEvent>,
+        IConsumer<UserAccountStatusEvent>
     {
         private readonly IUserLogRepository _userLogRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -39,6 +40,11 @@ namespace Manhwa.Infrastructure.Messaging.Consumers
         {
             var msg = context.Message;
             await SaveToDatabase(msg.UserId, msg.IpAddress, msg.UserAgent, msg.CreateAt, UserLogAction.Logout, context.CancellationToken);
+        }
+        public async Task Consume(ConsumeContext<UserAccountStatusEvent> context)
+        {
+            var msg = context.Message;
+            await SaveToDatabase(msg.UserId, msg.IpAddress, msg.UserAgent, msg.CreateAt, msg.Action, context.CancellationToken);
         }
         public async Task Consume(ConsumeContext<UserPasswordResetIntegrationEvent> context)
         {
