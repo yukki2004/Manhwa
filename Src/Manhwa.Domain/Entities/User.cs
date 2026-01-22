@@ -26,6 +26,7 @@ namespace Manhwa.Domain.Entities
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<UserLog> UserLogs { get; set; } = new List<UserLog>();
         public ICollection<ExpLog> ExpLogs { get; set; } = new List<ExpLog>();
+        public ICollection<Story> stories { get; set; } = new List<Story>();
 
     }
 }

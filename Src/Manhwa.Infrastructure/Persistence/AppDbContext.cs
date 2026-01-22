@@ -17,6 +17,7 @@ namespace Manhwa.Infrastructure.Persistence
         public DbSet<Domain.Entities.RefreshToken> RefreshTokens { get; set; }
         public DbSet<Domain.Entities.User> Users { get; set; }
         public DbSet<Domain.Entities.UserLog> UserLogs { get; set; }
+        public DbSet<Domain.Entities.Story> Stories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

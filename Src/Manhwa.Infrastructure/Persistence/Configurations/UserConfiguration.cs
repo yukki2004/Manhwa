@@ -109,6 +109,11 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .WithOne(el => el.User)
                    .HasForeignKey(el => el.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u=> u.stories)
+                .WithOne(s=> s.User)
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
