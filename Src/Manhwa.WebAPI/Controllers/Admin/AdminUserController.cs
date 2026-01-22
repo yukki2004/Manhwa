@@ -1,4 +1,5 @@
 ﻿using Manhwa.Application.Features.Users.Management.Command.UpdateUserStatus;
+using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,12 @@ namespace Manhwa.WebAPI.Controllers.Admin
                 Success = result,
                 Message = request.IsActive ? "Mở khóa thành công." : "Đã khóa và đăng xuất khỏi các thiết bị."
             });
+        }
+        [HttpGet("get-users")]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllUsersQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 }

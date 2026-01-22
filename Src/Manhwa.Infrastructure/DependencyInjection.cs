@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Manhwa.Application.Common.Interfaces;
+using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Domain.Repositories;
 using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Identity;
 using Manhwa.Infrastructure.Messaging.Consumers;
 using Manhwa.Infrastructure.Persistence;
+using Manhwa.Infrastructure.Persistence.Queries;
 using Manhwa.Infrastructure.Persistence.Repositories;
 using Manhwa.Infrastructure.Security;
 using MassTransit;
@@ -141,7 +143,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<IStorageService, CloudflareR2Service>();
-
+            services.AddScoped<IUserQueries, UserQueries>();
             return services;
             
         }

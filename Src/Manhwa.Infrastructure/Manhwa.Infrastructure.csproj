@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Manhwa.Application\Manhwa.Application.csproj" />
     <ProjectReference Include="..\Manhwa.Domain\Manhwa.Domain.csproj" />
   </ItemGroup>

@@ -92,7 +92,7 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .HasColumnName("update_at")
                    .HasColumnType("timestamptz")
                    .HasDefaultValueSql("now()")
-                   .ValueGeneratedOnAddOrUpdate();
+                   .ValueGeneratedOnAdd();
 
             // Relationships
             builder.HasMany(u => u.RefreshTokens)
