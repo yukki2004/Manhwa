@@ -144,6 +144,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<IStorageService, CloudflareR2Service>();
             services.AddScoped<IUserQueries, UserQueries>();
+            services.AddScoped<ICategoryQueries, CategoryQueries>(); 
             return services;
             
         }

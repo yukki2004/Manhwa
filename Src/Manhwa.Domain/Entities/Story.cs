@@ -28,5 +28,11 @@ namespace Manhwa.Domain.Entities
         public long? UserId { get; set; }
         // navigation property
         public User? User { get; set; }
+        public ICollection<UserFavorite> UserFavorites { get; set; } = new List<UserFavorite>();
+        public ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
+        public ICollection<ReadingHistory> ReadingHistories { get; set; } = new List<ReadingHistory>();
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+        public ICollection<StoryCategory> StoryCategories { get; set; } = new List<StoryCategory>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

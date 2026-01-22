@@ -114,6 +114,36 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                 .WithOne(s=> s.User)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(u => u.UserFavorites)
+                   .WithOne(uf => uf.User)
+                   .HasForeignKey(uf => uf.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Ratings)
+                   .WithOne(r => r.User)
+                   .HasForeignKey(r => r.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u=> u.ReadingHistories)
+                .WithOne(rh => rh.User)
+                .HasForeignKey(rh => rh.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.Comments)
+                   .WithOne(c => c.User)
+                   .HasForeignKey(c => c.UserId)
+                   .OnDelete(DeleteBehavior.SetNull);
+            
+            builder.HasMany(u => u.SentNotifications)
+                   .WithOne(n => n.Sender)
+                   .HasForeignKey(n => n.SenderId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+             builder.HasMany(u => u.UserNotifications)
+                   .WithOne(un => un.User)
+                   .HasForeignKey(un => un.UserId)
+                   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Domain.Entities
 {
-    class ReadingHistory
+    public class ReadingHistory
     {
+        public long UserId { get; set; }
+        public long StoryId { get; set; }
+        public long ChapterId { get; set; }
+        public DateTimeOffset LastReadAt { get; set; }
+
+        // Navigation properties
+        public User User { get; set; } = null!;
+        public Story Story { get; set; } = null!;
+        public Chapter Chapter { get; set; } = null!;
     }
 }

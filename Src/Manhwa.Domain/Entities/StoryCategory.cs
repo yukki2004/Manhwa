@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Domain.Entities
 {
-    class StoryCategory
+    public class StoryCategory
     {
+        public long StoryId { get; set; }
+        public int CategoryId { get; set; } 
+
+        // Navigation properties
+        public Story Story { get; set; } = null!;
+        public Category Category { get; set; } = null!;
     }
 }

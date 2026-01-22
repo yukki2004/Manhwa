@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Domain.Entities
 {
-    class UserNotification
+    public class UserNotification
     {
+        public long UserId { get; set; }
+        public long NotificationId { get; set; }
+        public bool IsRead { get; set; }
+        public DateTimeOffset? ReadAt { get; set; }
+
+        // Navigation properties
+        public User User { get; set; } = null!;
+        public Notification Notification { get; set; } = null!;
     }
 }

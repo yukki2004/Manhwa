@@ -6,7 +6,20 @@ using System.Threading.Tasks;
 
 namespace Manhwa.Domain.Entities
 {
-    class Chapter
+    public class Chapter
     {
+        public long ChapterId { get; set; }
+        public string? Title { get; set; }
+        public double ChapterNumber { get; set; }
+        public int TotalView { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
+
+        // Foreign Key & Navigation Property
+        public long StoryId { get; set; }
+        public Story Story { get; set; } = null!;
+        public ICollection<ChapterImage> ChapterImages { get; set; } = new List<ChapterImage>();
+        public ICollection<ReadingHistory> ReadingHistories { get; set; } = new List<ReadingHistory>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

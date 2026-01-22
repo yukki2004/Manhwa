@@ -27,6 +27,11 @@ namespace Manhwa.Domain.Entities
         public ICollection<UserLog> UserLogs { get; set; } = new List<UserLog>();
         public ICollection<ExpLog> ExpLogs { get; set; } = new List<ExpLog>();
         public ICollection<Story> stories { get; set; } = new List<Story>();
-
+        public ICollection<UserFavorite> UserFavorites { get; set; } = new List<UserFavorite>();
+        public ICollection<ReadingHistory> ReadingHistories { get; set; } = new List<ReadingHistory>();
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
+        public ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
     }
 }
