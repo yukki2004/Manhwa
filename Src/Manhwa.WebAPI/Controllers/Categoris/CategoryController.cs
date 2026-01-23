@@ -12,7 +12,7 @@ namespace Manhwa.WebAPI.Controllers.Categoris
         {
             _mediator = mediator;
         }
-        [HttpGet]
+        [HttpGet("get-all-category")]
         public async Task<IActionResult> GetCategories()
         {
             var result = await _mediator.Send(new Manhwa.Application.Features.Categories.Queries.GetCategories.GetCategoriesQuery());

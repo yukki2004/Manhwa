@@ -25,11 +25,9 @@
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Mappings\" />
     <Folder Include="Features\Interactions\" />
     <Folder Include="Features\Community\" />
     <Folder Include="Features\Notifications\" />
-    <Folder Include="Features\Stories\" />
   </ItemGroup>
 
 </Project>

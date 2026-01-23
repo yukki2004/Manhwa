@@ -11,6 +11,9 @@ namespace Manhwa.Domain.Enums.Notification
         System = 0,
         NewChapter = 1,
         AccountWarning = 2,
-        StoryAlert = 3
+        StoryAlert = 3,
+        LevelUp = 4,
+        CommentReply = 5,
+        NewComment = 6
     }
 }

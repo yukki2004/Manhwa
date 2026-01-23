@@ -32,6 +32,14 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .HasConversion<short>() 
                    .IsRequired();
 
+            builder.Property(n => n.Metadata)
+                .HasColumnName("metadata")
+                .HasColumnType("jsonb");
+
+            builder.Property(n => n.RedirectUrl)
+                .HasColumnName("redirect_url")
+                .HasColumnType("text");
+
             builder.Property(n => n.CreatedAt)
                    .HasColumnName("create_at")
                    .HasColumnType("timestamptz")

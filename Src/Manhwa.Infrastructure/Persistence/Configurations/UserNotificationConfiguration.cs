@@ -23,8 +23,7 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
 
             builder.Property(un => un.IsRead)
                    .HasColumnName("is_read")
-                   .IsRequired()
-                   .HasDefaultValue(false);
+                   .IsRequired();
 
             builder.Property(un => un.ReadAt)
                    .HasColumnName("read_at")

@@ -6,15 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Manhwa.Application.Common.Interfaces;
+using Manhwa.Application.Common.Interfaces.Notifications;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Domain.Repositories;
 using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Identity;
 using Manhwa.Infrastructure.Messaging.Consumers;
+using Manhwa.Infrastructure.Notifications.Strategies;
 using Manhwa.Infrastructure.Persistence;
 using Manhwa.Infrastructure.Persistence.Queries;
 using Manhwa.Infrastructure.Persistence.Repositories;
+using Manhwa.Infrastructure.Realtime.Services;
 using Manhwa.Infrastructure.Security;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -78,6 +81,8 @@ namespace Manhwa.Infrastructure
                 x.AddConsumer<UserLogConsumer>();
                 x.AddConsumer<SendOtpEmailConsumer>();
                 x.AddConsumer<PasswordNotificationConsumer>();
+                x.AddConsumer<ExpConsumer>();
+                x.AddConsumer<NotificationConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -101,6 +106,16 @@ namespace Manhwa.Infrastructure
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
                         e.ConfigureConsumer<PasswordNotificationConsumer>(context);
+                    });
+                    cfg.ReceiveEndpoint("exp-processing-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<ExpConsumer>(context);
+                    });
+                    cfg.ReceiveEndpoint("notification-processing-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<NotificationConsumer>(context);
                     });
                 });
             });
@@ -136,15 +151,28 @@ namespace Manhwa.Infrastructure
             });
 
             // cấu hình các interface
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserLogRepository, UserLogRepository>();
-            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            // service
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<IStorageService, CloudflareR2Service>();
+            services.AddSignalR();
+            services.AddScoped<IRealtimeService, RealtimeService>();
+            // repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IUserLogRepository, UserLogRepository>();
+            services.AddScoped<INotificationStrategy, LevelUpStrategy>(); 
+            services.AddScoped<IlevelExpRepository, LevelExpRepository>();
+            services.AddScoped<IExpLogRepository, ExpLogRepository>();
+            services.AddScoped<IExpActionRepository, ExpActionRepository>();
+            services.AddScoped<ICategoryQueries, CategoryQueries>();
+            services.AddScoped<IStoryRepository, StoryRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            // queries
             services.AddScoped<IUserQueries, UserQueries>();
-            services.AddScoped<ICategoryQueries, CategoryQueries>(); 
+
             return services;
             
         }

@@ -13,6 +13,8 @@ namespace Manhwa.Domain.Entities
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;
         public NotificationType Type { get; set; }
+        public string? RedirectUrl { get; set; } 
+        public string? Metadata { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
 
         // Foreign Key & Navigation Property (Người gửi - thường là Admin hoặc Hệ thống)

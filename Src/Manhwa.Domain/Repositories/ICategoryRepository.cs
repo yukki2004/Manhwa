@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manhwa.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Manhwa.Domain.Repositories
 {
     public interface ICategoryRepository
     {
+        Task AddStoryCategoriesAsync(IEnumerable<StoryCategory> storyCategories, CancellationToken ct = default);
     }
 }

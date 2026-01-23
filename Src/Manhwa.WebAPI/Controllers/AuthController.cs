@@ -55,8 +55,8 @@ namespace Manhwa.WebAPI.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Path = "/api",
+                SameSite = SameSiteMode.None,
+                Path = "/",
                 Expires = DateTimeOffset.UtcNow.AddMinutes(15)
             };
 
@@ -65,7 +65,7 @@ namespace Manhwa.WebAPI.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/api/auth",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
@@ -91,15 +91,15 @@ namespace Manhwa.WebAPI.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Path = "/api",
+                SameSite = SameSiteMode.None,
+                Path = "/",
                 Expires = DateTimeOffset.UtcNow.AddMinutes(15)
             };
             var refreshCookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Path = "/api/auth",
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };

@@ -11,6 +11,8 @@ namespace Manhwa.Domain.Enums
         ViewChapter = 1,
         Comment = 2,
         RateStory = 3,
-        ViewStory = 4
+        ViewStory = 4,
+        CreateStory = 5,
+        CreateChapter = 6
     }
 }
