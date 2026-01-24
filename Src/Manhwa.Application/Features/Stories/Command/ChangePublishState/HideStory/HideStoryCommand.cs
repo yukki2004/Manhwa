@@ -6,13 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Manhwa.Application.Features.Stories.Command.UpdateStoryStatus
+namespace Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory
 {
-    public class UpdateStoryStatusCommand : IRequest<UpdateStoryStatusResponse>
+    public class HideStoryCommand : IRequest<bool>
     {
         public long StoryId { get; init; }
-        public short Status { get; init; }
         public long UserId { get; init; }
-        
+        public string UserRole { get; init; } = null!;
     }
 }

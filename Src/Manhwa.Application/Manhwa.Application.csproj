@@ -27,6 +27,7 @@
     <Folder Include="Features\Interactions\" />
     <Folder Include="Features\Community\" />
     <Folder Include="Features\Notifications\" />
+    <Folder Include="Features\Stories\Command\UpdateStoryStatus\" />
   </ItemGroup>
 
 </Project>

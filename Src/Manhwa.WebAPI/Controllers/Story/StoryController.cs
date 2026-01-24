@@ -1,7 +1,9 @@
 ﻿using Manhwa.Application.Features.Stories.Command.AdminModeration.ModerateWithStatus;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState;
+using Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteStory;
+using Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory;
+using Manhwa.Application.Features.Stories.Command.ChangePublishState.PublishStory;
 using Manhwa.Application.Features.Stories.Command.CreateStory;
-using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,55 +42,64 @@ namespace Manhwa.WebAPI.Controllers.Story
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpPatch("{storyId}/status")]
+        [HttpPatch("{storyId}/publish")]
         [Authorize]
-        public async Task<IActionResult> UpdateStoryStatus([FromRoute] long storyId, [FromBody] UpdateStoryStatusRequest request)
+        public async Task<IActionResult> PublishStory([FromRoute] long storyId)
         {
             var userId = User.GetUserId();
-            if (userId == null)
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userId == null || userRole == null)
             {
                 return Unauthorized();
             }
-            var command = new UpdateStoryStatusCommand
+            var command = new PublishStoryCommand
             {
                 StoryId = storyId,
-                Status = request.Status,
-                UserId = (long)userId
+                UserId = (long)userId,
+                UserRole = userRole
             };
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpPatch("{storyId}/publish-state")]
+        [HttpPatch("{storyId}/hidden")]
         [Authorize]
-        public async Task<IActionResult> ChangePublishState([FromRoute] long storyId, [FromBody] ChangePublishStateRequest request)
+        public async Task<IActionResult> HiddenStory([FromRoute] long storyId)
         {
             var userId = User.GetUserId();
-            if (userId == null)
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userId == null || userRole == null)
             {
                 return Unauthorized();
             }
-            var command = new ChangePublishStateCommand
+            var command = new HideStoryCommand
             {
                 StoryId = storyId,
-                IsPublished = request.IsPublished,
-                UserId = (long)userId
+                UserId = (long)userId,
+                UserRole = userRole
             };
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpPatch("{storyId}/admin/publish-state")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ChangePublishStateByAdmin([FromRoute] long storyId, [FromBody] ModerateWithStatusRequest request)
+        [HttpDelete("{storyId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteStory([FromRoute] long storyId)
         {
-            var command = new ModerateWithStatusCommand
+            var userId = User.GetUserId();
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userId == null || userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new DeleteStoryCommand
             {
                 StoryId = storyId,
-                IsPublished = request.IsPublished,
-                AdminNote = request.AdminNote
+                UserId = (long)userId,
+                UserRole = userRole
             };
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+
 
     }
 }
