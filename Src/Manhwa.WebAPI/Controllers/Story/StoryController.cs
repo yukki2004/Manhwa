@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Stories.Command.CreateStory;
+﻿using Manhwa.Application.Features.Stories.Command.ChangePublishState;
+using Manhwa.Application.Features.Stories.Command.CreateStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -51,6 +52,24 @@ namespace Manhwa.WebAPI.Controllers.Story
             {
                 StoryId = storyId,
                 Status = request.Status,
+                UserId = (long)userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/publish-state")]
+        [Authorize]
+        public async Task<IActionResult> ChangePublishState([FromRoute] long storyId, [FromBody] ChangePublishStateRequest request)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var command = new ChangePublishStateCommand
+            {
+                StoryId = storyId,
+                IsPublished = request.IsPublished,
                 UserId = (long)userId
             };
             var result = await _mediator.Send(command);

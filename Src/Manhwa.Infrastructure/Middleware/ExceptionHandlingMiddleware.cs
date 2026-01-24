@@ -28,6 +28,7 @@ namespace Manhwa.Infrastructure.Middleware
             {
                 NotFoundException => HttpStatusCode.NotFound,
                 ForbiddenAccessException => HttpStatusCode.Forbidden,
+                BusinessRuleViolationException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
 
@@ -38,6 +39,7 @@ namespace Manhwa.Infrastructure.Middleware
             {
                 error = exception.Message,
                 status = (int)code,
+                code = (exception as BusinessRuleViolationException)?.ErrorCode ?? "BUSINESS_RULE_VIOLATION",
                 timestamp = DateTime.UtcNow
             }));
         }

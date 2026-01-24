@@ -1,4 +1,5 @@
-﻿using Manhwa.Domain.Enums.Story;
+﻿using Manhwa.Domain.Enums;
+using Manhwa.Domain.Enums.Story;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace Manhwa.Domain.Entities
         public int RateSum { get; set; }
         public int RateCount { get; set; }
         public decimal RateAvg { get; set; }
+        public AdminLockStatus AdminLockStatus { get; set; }
+        public string? AdminNote { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
         public long? UserId { get; set; }

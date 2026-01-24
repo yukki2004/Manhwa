@@ -1,4 +1,5 @@
 ﻿using Manhwa.Domain.Entities;
+using Manhwa.Domain.Enums;
 using Manhwa.Domain.Enums.Story;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -45,12 +46,20 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
             builder.Property(s => s.Author)
                    .HasColumnName("author")
                    .HasMaxLength(100);
+            builder.Property(s => s.AdminNote)
+                .HasColumnName("admin_note")
+                .HasColumnType("text");
 
             // Enum & Default Values
             builder.Property(s => s.Status)
                    .HasColumnName("status")
                    .HasConversion<short>()
                    .HasDefaultValue(StoryStatus.Ongoing);
+
+            builder.Property(s => s.AdminLockStatus)
+                   .HasColumnName("admin_lock_status")
+                   .HasConversion<short>()
+                   .HasDefaultValue(AdminLockStatus.Normal);
 
             builder.Property(s => s.IsHot)
                    .HasColumnName("is_hot")
