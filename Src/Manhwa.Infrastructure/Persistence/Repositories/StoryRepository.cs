@@ -28,5 +28,12 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
         {
             return await _appDbContext.Stories.FirstOrDefaultAsync(s => s.Slug == slug, ct);
         }
+        public async Task<Story?> GetByIdWithCategoriesAsync(long id, CancellationToken ct)
+        {
+            return await _appDbContext.Stories
+                .Include(s => s.StoryCategories)
+                .ThenInclude(sc => sc.Category)
+                .FirstOrDefaultAsync(s => s.StoryId == id, ct);
+        }
     }
 }
