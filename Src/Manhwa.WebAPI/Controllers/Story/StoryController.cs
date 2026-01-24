@@ -1,4 +1,5 @@
 ﻿using Manhwa.Application.Features.Stories.Command.CreateStory;
+using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,24 @@ namespace Manhwa.WebAPI.Controllers.Story
                 Author = request.Author,
                 UserId = (long)userId,
                 GenreIds = request.GenreIds
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateStoryStatus([FromRoute] long storyId, [FromBody] UpdateStoryStatusRequest request)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var command = new UpdateStoryStatusCommand
+            {
+                StoryId = storyId,
+                Status = request.Status,
+                UserId = (long)userId
             };
             var result = await _mediator.Send(command);
             return Ok(result);

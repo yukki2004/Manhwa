@@ -3,6 +3,7 @@ using Manhwa.Application;
 using Manhwa.Application.Common.Extensions;
 using Manhwa.Infrastructure;
 using Manhwa.Infrastructure.FileStorage;
+using Manhwa.Infrastructure.Middleware;
 using Manhwa.Infrastructure.Realtime.Hubs;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
@@ -45,7 +46,7 @@ namespace Manhwa.WebAPI
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-     
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseCors("AllowTestClient");
             app.UseHttpsRedirection();
             app.UseAuthentication();

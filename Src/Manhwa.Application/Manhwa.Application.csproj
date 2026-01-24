@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Exceptions\" />
     <Folder Include="Features\Interactions\" />
     <Folder Include="Features\Community\" />
     <Folder Include="Features\Notifications\" />
