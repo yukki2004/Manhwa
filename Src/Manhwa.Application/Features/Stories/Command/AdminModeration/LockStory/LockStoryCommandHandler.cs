@@ -33,6 +33,10 @@ namespace Manhwa.Application.Features.Stories.Command.AdminModeration.LockStory
             {
                 throw new NotFoundException("story", command.StoryId);
             }
+            if(story.AdminLockStatus == Domain.Enums.AdminLockStatus.Locked)
+            {
+                return true;
+            }
             var lockCheck = story.AdminLockStatus == Domain.Enums.AdminLockStatus.Normal;
             story.AdminLockStatus = Domain.Enums.AdminLockStatus.Locked;
             story.AdminNote = command.AdminNote;

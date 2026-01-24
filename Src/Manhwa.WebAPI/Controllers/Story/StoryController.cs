@@ -5,6 +5,7 @@ using Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteStory
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.PublishStory;
 using Manhwa.Application.Features.Stories.Command.CreateStory;
+using Manhwa.Application.Features.Stories.Command.UpdateStoryAvatar;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.CompleteStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.DropStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
@@ -195,6 +196,31 @@ namespace Manhwa.WebAPI.Controllers.Story
             };
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+        [HttpPatch("{storyId}/avatar")]
+        [Authorize]
+        public async Task<IActionResult> UpdateStoryAvatar([FromRoute] long storyId, [FromForm] UpdateStoryAvatarRequest request)
+        {
+            var userId = User.GetUserId();
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new UpdateStoryAvatarCommand
+            {
+                StoryId = storyId,
+                UserId = (long)userId,
+                UserRole = userRole,
+                ThumbnailFile = request.ThumbnailFile
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+
         }
 
 
