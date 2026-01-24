@@ -15,7 +15,6 @@ namespace Manhwa.Application.Features.Stories.Command.CreateStory
             RuleFor(x => x.Description).NotEmpty().MinimumLength(5);
             RuleFor(x => x.GenreIds).NotEmpty().WithMessage("Truyện phải có ít nhất một thể loại.");
             RuleFor(x => x.UserId).GreaterThan(0);
-
             if (DateTimeOffset.UtcNow.Year > 0)
                 RuleFor(x => x.ReleaseYear).InclusiveBetween(1900, DateTime.Now.Year + 1);
         }

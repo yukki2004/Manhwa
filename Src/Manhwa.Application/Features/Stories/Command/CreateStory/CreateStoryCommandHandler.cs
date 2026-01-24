@@ -79,7 +79,7 @@ namespace Manhwa.Application.Features.Stories.Command.CreateStory
                 {
                     StoryId = story.StoryId,
                     CategoryId = catId
-                });
+                }).ToList();
                 await _categoryRepository.AddStoryCategoriesAsync(storyCategories, cancellationToken);
             }
             story.Slug = $"{request.Title.ToSlug()}-{story.StoryId}";
