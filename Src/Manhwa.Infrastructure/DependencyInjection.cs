@@ -164,6 +164,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUserLogRepository, UserLogRepository>();
             services.AddScoped<INotificationStrategy, LevelUpStrategy>(); 
+            services.AddScoped<INotificationStrategy, StoryAlertStrategy>();
             services.AddScoped<IlevelExpRepository, LevelExpRepository>();
             services.AddScoped<IExpLogRepository, ExpLogRepository>();
             services.AddScoped<IExpActionRepository, ExpActionRepository>();

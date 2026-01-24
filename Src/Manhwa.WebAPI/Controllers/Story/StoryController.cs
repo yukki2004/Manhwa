@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Stories.Command.ChangePublishState;
+﻿using Manhwa.Application.Features.Stories.Command.AdminModeration.ModerateWithStatus;
+using Manhwa.Application.Features.Stories.Command.ChangePublishState;
 using Manhwa.Application.Features.Stories.Command.CreateStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus;
 using Manhwa.WebAPI.Extensions;
@@ -75,5 +76,19 @@ namespace Manhwa.WebAPI.Controllers.Story
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+        [HttpPatch("{storyId}/admin/publish-state")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangePublishStateByAdmin([FromRoute] long storyId, [FromBody] ModerateWithStatusRequest request)
+        {
+            var command = new ModerateWithStatusCommand
+            {
+                StoryId = storyId,
+                IsPublished = request.IsPublished,
+                AdminNote = request.AdminNote
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
     }
 }
