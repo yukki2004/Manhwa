@@ -4,6 +4,9 @@ using Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteStory
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.PublishStory;
 using Manhwa.Application.Features.Stories.Command.CreateStory;
+using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.CompleteStory;
+using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.DropStory;
+using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -95,6 +98,75 @@ namespace Manhwa.WebAPI.Controllers.Story
                 StoryId = storyId,
                 UserId = (long)userId,
                 UserRole = userRole
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/ongoing")]
+        [Authorize]
+        public async Task<IActionResult> ModerateStoryToOngoing([FromRoute] long storyId)
+        {
+            var userId = User.GetUserId();
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new OngoingStoryCommand
+            {
+                StoryId = storyId,
+                UserRole = userRole,
+                UserId = (long)userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/drop")]
+        [Authorize]
+        public async Task<IActionResult> ModerateStoryToDrop([FromRoute] long storyId)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new DropStoryCommand
+            {
+                StoryId = storyId,
+                UserRole = userRole,
+                UserId = (long)userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/complete")]
+        [Authorize]
+        public async Task<IActionResult> ModerateStoryToComplete([FromRoute] long storyId)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new CompleteStoryCommand
+            {
+                StoryId = storyId,
+                UserRole = userRole,
+                UserId = (long)userId
             };
             var result = await _mediator.Send(command);
             return Ok(result);
