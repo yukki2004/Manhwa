@@ -42,6 +42,12 @@ namespace Manhwa.Application.Features.Stories.Command.UpdateStoryStatus
                 throw new NotFoundException("story", command.StoryId);
             }
             if (story.UserId != command.UserId) throw new ForbiddenAccessException();
+            if (story.AdminLockStatus == Domain.Enums.AdminLockStatus.Locked)
+            {
+                throw new BusinessRuleViolationException(
+        $"Không thể thao tác: Truyện đã bị khóa bởi Admin. Lý do: {story.AdminNote}",
+        "STORY_IS_LOCKED");
+            }
             story.Status = (StoryStatus)command.Status;
             await _unitOfWork.SaveChangesAsync(ct);
             return new UpdateStoryStatusResponse
