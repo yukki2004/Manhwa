@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Manhwa.Application.Features.Stories.Command.AdminModeration.ModerateWithStatus
+namespace Manhwa.Application.Features.Stories.Command.AdminModeration.LockStory
 {
-    public class ModerateWithStatusRequest
+    public class LockStoryRequest
     {
-        public short IsPublished { get; set; }
         public string? AdminNote { get; set; }
     }
 }

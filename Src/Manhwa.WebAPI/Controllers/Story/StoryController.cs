@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Stories.Command.AdminModeration.ModerateWithStatus;
+﻿using Manhwa.Application.Features.Stories.Command.AdminModeration.LockStory;
+using Manhwa.Application.Features.Stories.Command.AdminModeration.UnLockStory;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteStory;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory;
@@ -167,6 +168,30 @@ namespace Manhwa.WebAPI.Controllers.Story
                 StoryId = storyId,
                 UserRole = userRole,
                 UserId = (long)userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/lock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> LockStory([FromRoute] long storyId, [FromBody] LockStoryRequest request)
+        {
+            var command = new LockStoryCommand
+            {
+                StoryId = storyId,
+                AdminNote = request.AdminNote
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/unlock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UnLockStory([FromRoute] long storyId, [FromBody] UnlockStoryRequest request)
+        {
+            var command = new UnLockStoryCommand
+            {
+                StoryId = storyId,
+                AdminNote = request.AdminNote
             };
             var result = await _mediator.Send(command);
             return Ok(result);

@@ -17,10 +17,11 @@ namespace Manhwa.Infrastructure.Notifications.Strategies
             string storyTitle = data.TryGetProperty("title", out var t) ? t.ToString() : "Một truyện mới";
             string adminNote = data.TryGetProperty("adminNote", out var n) ? n.ToString() : "";
             string slug = data.TryGetProperty("slug", out var s) ? s.ToString() : "";
+            string reason = data.TryGetProperty("reason", out var r) ? r.ToString() : "Không rõ lí do";
 
             return (
                 Title: "Thông báo!",
-                Content: $"Truyện của bạn '{storyTitle}' đã bị khóa với lí do: {adminNote}",
+                Content: $"Truyện của bạn '{storyTitle}' đã {reason} với lí do: {adminNote}",
                 RedirectUrl: $"/story/{slug}"
             );
         }
