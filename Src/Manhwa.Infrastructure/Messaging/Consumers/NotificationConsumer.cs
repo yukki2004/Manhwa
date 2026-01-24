@@ -57,7 +57,7 @@ namespace Manhwa.Infrastructure.Messaging.Consumers
                 NotificationId = notification.NotificationId,
                 IsRead = false,
                 ReadAt = DateTimeOffset.UtcNow
-            });
+            }).ToList();
             await _notificationRepository.AddUserNotificationsAsync(userNotifs, context.CancellationToken);
             await _unitOfWork.SaveChangesAsync(context.CancellationToken);
             notification.Sender = senderInfo;
