@@ -1,4 +1,5 @@
 ﻿using Manhwa.Application.Features.Interactions.Command.FollowStory;
+using Manhwa.Application.Features.Interactions.Command.Unfollow;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,23 @@ namespace Manhwa.WebAPI.Controllers.Interactions
             {
                 StoryId = storyId,
                 UserId = (long)userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPost("unfollow/{storyId}")]
+        [Authorize]
+        public async Task<IActionResult> UnfollowStory([FromRoute] long storyId)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var command = new UnfollowStoryCommand
+            {
+                StoryId = storyId,
+                UserId = (long)userId,
             };
             var result = await _mediator.Send(command);
             return Ok(result);
