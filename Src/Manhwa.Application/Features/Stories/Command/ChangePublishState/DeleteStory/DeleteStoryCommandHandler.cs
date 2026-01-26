@@ -58,10 +58,11 @@ namespace Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteS
                     $"Không thể thao tác: Truyện đã bị khóa bởi Admin. Lý do: {story.AdminNote}",
                     "STORY_IS_LOCKED");
                 }
-
                 if (story.IsPublish == Domain.Enums.Story.StoryPublishStatus.Deleted)
                 {
-                    return true;
+                    throw new BusinessRuleViolationException(
+                    $"Không thể thao tác: Truyện đã bị xóa",
+                    "STORY_IS_DELETED");
                 }
                 story.IsPublish = Domain.Enums.Story.StoryPublishStatus.Deleted;
             }
