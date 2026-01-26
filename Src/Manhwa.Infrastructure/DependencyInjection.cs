@@ -171,6 +171,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<ICategoryQueries, CategoryQueries>();
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
             // queries
             services.AddScoped<IUserQueries, UserQueries>();
 

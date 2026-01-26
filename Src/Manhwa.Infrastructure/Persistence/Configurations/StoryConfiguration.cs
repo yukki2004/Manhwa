@@ -71,6 +71,10 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .HasDefaultValue(StoryPublishStatus.Published);
 
             // Stats
+            builder.Property(s => s.FollowCount)
+                   .HasColumnName("follow_count")
+                   .HasDefaultValue(0);
+
             builder.Property(s => s.TotalView)
                    .HasColumnName("total_view")
                    .HasDefaultValue(0);

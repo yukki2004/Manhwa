@@ -19,6 +19,7 @@ namespace Manhwa.Domain.Entities
         public string? Author { get; set; }
         public StoryStatus Status { get; set; }
         public bool IsHot { get; set; }
+        public int FollowCount { get; set; } 
         public StoryPublishStatus IsPublish { get; set; }
         public int TotalView { get; set; }
         public int RateSum { get; set; }
