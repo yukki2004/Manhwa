@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Manhwa.Domain.Enums.Chapter;
 
 namespace Manhwa.Infrastructure.Persistence.Configurations
 {
@@ -34,6 +35,13 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                 .HasPrecision(10, 2)
                 .IsRequired()
                 .HasDefaultValue(0.0);
+
+            // Cấu hình cột Status
+            builder.Property(c => c.Status)
+                   .HasColumnName("status")
+                   .HasConversion<short>()
+                   .HasDefaultValue(ChapterStatus.Published)
+                   .IsRequired();
 
             builder.Property(c => c.TotalView)
                    .HasColumnName("total_view")

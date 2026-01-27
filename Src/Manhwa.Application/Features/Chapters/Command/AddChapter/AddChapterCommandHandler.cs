@@ -84,12 +84,13 @@ namespace Manhwa.Application.Features.Chapters.Command.AddChapter
             };
             await _chapterRepository.AddAsync(newChapter, ct);
             await _unitOfWork.SaveChangesAsync(ct);
-            var files = command.Images.ToList();
+            var files = command.Images
+                        .OrderBy(f => f.FileName) 
+                        .ToList();
             var uploadTasks = files.Select(async (file, index) =>
             {
                 var orderIndex = index + 1;
                 var path = $"stories/{story.StoryId}/chapters/{newChapter.ChapterId}/images/{orderIndex:D3}.webp";
-
                 using var inputStream = file.OpenReadStream();
                 using var outputStream = new MemoryStream();
 
@@ -106,12 +107,7 @@ namespace Manhwa.Application.Features.Chapters.Command.AddChapter
 
                 outputStream.Position = 0;
 
-                var imageUrl = await _storageService.UploadAsync(
-                    outputStream,
-                    path,
-                    "image/webp",
-                    true,
-                    ct);
+                var imageUrl = await _storageService.UploadAsync(outputStream, path, "image/webp", true, ct);
 
                 return new ChapterImage
                 {

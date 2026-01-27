@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manhwa.Domain.Enums.Chapter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Manhwa.Domain.Entities
         public string Slug { get; set; } = null!; 
         public double ChapterNumber { get; set; }
         public int TotalView { get; set; }
+        public ChapterStatus Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
