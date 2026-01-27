@@ -10,6 +10,7 @@ namespace Manhwa.Domain.Entities
     {
         public long ChapterId { get; set; }
         public string? Title { get; set; }
+        public string Slug { get; set; } = null!; 
         public double ChapterNumber { get; set; }
         public int TotalView { get; set; }
         public DateTimeOffset CreatedAt { get; set; }

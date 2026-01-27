@@ -39,5 +39,13 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct)
             => await _context.Users.AnyAsync(u => u.Username == username, ct);
+        public async Task<List<User>> GetFollowersByStoryIdAsync(long storyId, CancellationToken ct = default)
+        {
+            return await _context.UserFavorites 
+                .Where(f => f.StoryId == storyId)
+                .Select(f => f.User) 
+                .AsNoTracking() 
+                .ToListAsync(ct);
+        }
     }
 }

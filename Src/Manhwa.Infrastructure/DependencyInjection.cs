@@ -165,6 +165,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IUserLogRepository, UserLogRepository>();
             services.AddScoped<INotificationStrategy, LevelUpStrategy>(); 
             services.AddScoped<INotificationStrategy, StoryAlertStrategy>();
+            services.AddScoped<INotificationStrategy, NewChapterStrategy>();
             services.AddScoped<IlevelExpRepository, LevelExpRepository>();
             services.AddScoped<IExpLogRepository, ExpLogRepository>();
             services.AddScoped<IExpActionRepository, ExpActionRepository>();
@@ -172,6 +173,8 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
+            services.AddScoped<IChapterRepository, ChapterRepository>();
+            
             // queries
             services.AddScoped<IUserQueries, UserQueries>();
 

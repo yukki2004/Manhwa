@@ -9,8 +9,8 @@ namespace Manhwa.Domain.Entities
     public class ReadingHistory
     {
         public long UserId { get; set; }
-        public long StoryId { get; set; }
         public long ChapterId { get; set; }
+        public long StoryId { get; set; }
         public DateTimeOffset LastReadAt { get; set; }
 
         // Navigation properties

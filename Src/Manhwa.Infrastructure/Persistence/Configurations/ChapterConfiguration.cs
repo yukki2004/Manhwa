@@ -25,10 +25,15 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .HasColumnName("title")
                    .HasColumnType("text");
 
+            builder.Property(c => c.Slug)
+                    .HasColumnName("slug")
+                    .IsRequired();
+
             builder.Property(c => c.ChapterNumber)
-                   .HasColumnName("chapter_number")
-                   .HasDefaultValue(0)
-                   .IsRequired();
+                .HasColumnName("chapter_number")
+                .HasPrecision(10, 2)
+                .IsRequired()
+                .HasDefaultValue(0.0);
 
             builder.Property(c => c.TotalView)
                    .HasColumnName("total_view")

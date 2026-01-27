@@ -19,5 +19,6 @@ namespace Manhwa.Domain.Repositories
         // Kiểm tra tồn tại (Dùng cho Validator)
         Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default);
         Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct = default);
+        Task<List<User>> GetFollowersByStoryIdAsync(long storyId, CancellationToken ct = default);
     }
 }

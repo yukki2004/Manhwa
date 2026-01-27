@@ -15,17 +15,25 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
         {
             // Table mapping
             builder.ToTable("reading_history");
+            builder.HasKey(h => new { h.UserId, h.ChapterId });
 
-            builder.HasKey(rh => new { rh.UserId, rh.StoryId });
+            builder.Property(h => h.UserId)
+                .HasColumnName("user_id")
+                .IsRequired();
 
-            builder.Property(rh => rh.UserId).HasColumnName("user_id");
-            builder.Property(rh => rh.StoryId).HasColumnName("story_id");
-            builder.Property(rh => rh.ChapterId).HasColumnName("chapter_id");
+            builder.Property(h => h.ChapterId)
+                .HasColumnName("chapter_id")
+                .IsRequired();
 
-            builder.Property(rh => rh.LastReadAt)
-                   .HasColumnName("last_read_at")
-                   .HasColumnType("timestamptz")
-                   .HasDefaultValueSql("now()");
+            builder.Property(h => h.StoryId)
+                .HasColumnName("story_id")
+                .IsRequired();
+
+            builder.Property(h => h.LastReadAt)
+                .HasColumnName("last_read_at")
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("now()")
+                .IsRequired();
 
             // Relationships
             builder.HasOne(rh => rh.User)

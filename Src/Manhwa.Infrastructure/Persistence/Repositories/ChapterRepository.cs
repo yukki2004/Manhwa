@@ -1,0 +1,28 @@
+﻿using Manhwa.Domain.Entities;
+using Manhwa.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Manhwa.Infrastructure.Persistence.Repositories
+{
+    public class ChapterRepository : IChapterRepository
+    {
+        private readonly AppDbContext _context;
+        public ChapterRepository(AppDbContext context) => _context = context;
+
+        public async Task AddAsync(Chapter chapter, CancellationToken ct = default)
+            => await _context.Chapters.AddAsync(chapter, ct);
+
+        public async Task AddImagesAsync(IEnumerable<ChapterImage> images, CancellationToken ct = default)
+            => await _context.ChapterImages.AddRangeAsync(images, ct);
+
+        public async Task<Chapter?> GetWithImagesAsync(long chapterId, CancellationToken ct = default)
+            => await _context.Chapters
+                .Include(c => c.ChapterImages.OrderBy(i => i.OrderIndex))
+                .FirstOrDefaultAsync(c => c.ChapterId == chapterId, ct);
+    }
+}
