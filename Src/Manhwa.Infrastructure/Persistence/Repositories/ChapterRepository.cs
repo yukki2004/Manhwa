@@ -19,7 +19,12 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
 
         public async Task AddImagesAsync(IEnumerable<ChapterImage> images, CancellationToken ct = default)
             => await _context.ChapterImages.AddRangeAsync(images, ct);
-
+        public async Task RemoveAllImagesAsync(long chapterId, CancellationToken ct = default)
+        {
+            await _context.ChapterImages
+                .Where(ci => ci.ChapterId == chapterId)
+                .ExecuteDeleteAsync(ct);
+        }
         public async Task<Chapter?> GetWithImagesAsync(long chapterId, CancellationToken ct = default)
             => await _context.Chapters
                 .Include(c => c.ChapterImages.OrderBy(i => i.OrderIndex))
@@ -29,6 +34,13 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
             return await _context.Chapters
                 .Include(c => c.Story)
                 .FirstOrDefaultAsync(c => c.ChapterId == chapterId, ct);
+        }
+        public async Task<Chapter?> GetWithStoryAndImagesByIdAsync(long id, CancellationToken ct = default)
+        {
+            return await _context.Chapters
+                .Include(c => c.Story)       
+                .Include(c => c.ChapterImages) 
+                .FirstOrDefaultAsync(c => c.ChapterId == id, ct);
         }
     }
 }

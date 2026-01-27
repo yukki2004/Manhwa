@@ -24,7 +24,7 @@ namespace Manhwa.Infrastructure.FileStorage
         public async Task<string> UploadAsync(Stream fileStream, string path, string contentType, bool isImmutable = false, CancellationToken ct = default)
         {
             var cacheHeader = isImmutable
-        ? "public, max-age=31536000, immutable" // Cho Chapter
+        ? "public, max-age=86400, must-revalidate" // Cho Chapter
         : "public, max-age=0, must-revalidate"; // Cho Avatar
             var request = new PutObjectRequest
             {

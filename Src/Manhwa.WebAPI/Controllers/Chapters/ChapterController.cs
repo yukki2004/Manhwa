@@ -6,6 +6,7 @@ using Manhwa.WebAPI.Extensions;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.DeleteChapterStatus;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.PublishChapterStatus;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.HideChapterStatus;
+using Manhwa.Application.Features.Chapters.Command.UpdateChapter;
 namespace Manhwa.WebAPI.Controllers.Chapters
 {
     [ApiController]
@@ -112,6 +113,32 @@ namespace Manhwa.WebAPI.Controllers.Chapters
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+        [HttpPut("{chapterId}")]
+        [Authorize]
+        public async Task<IActionResult> EditChapter([FromRoute] long chapterId, [FromForm] UpdateChapterRequest request)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Forbid();
+            }
+            var command = new UpdateChapterCommand
+            {
+                ChapterId = chapterId,
+                Title = request.Title,
+                UserId = (long)userId,
+                Images = request.Images,
+                UserRole = userRole,
+                ChapterNumber = request.ChapterNumber
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }   
 
     }
 
