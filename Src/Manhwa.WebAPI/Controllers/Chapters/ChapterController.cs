@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Manhwa.Application.Features.Chapters.Command.AddChapter;
 using Manhwa.WebAPI.Extensions;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.DeleteChapterStatus;
+using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.PublishChapterStatus;
 namespace Manhwa.WebAPI.Controllers.Chapters
 {
     [ApiController]
-    [Route("api/story")]
+    [Route("api/chap")]
     public class ChapterController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -56,6 +57,29 @@ namespace Manhwa.WebAPI.Controllers.Chapters
                 return Forbid();
             }
             var command = new DeleteChapterStatusCommand
+            {
+                ChapterId = chapterId,
+                UserId = (long)userId,
+                UserRole = userRole
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("chapter/{chapterId}/publish")]
+        [Authorize]
+        public async Task<IActionResult> PublishChapter([FromRoute] long chapterId)
+        {
+            var userId = User.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole == null)
+            {
+                return Forbid();
+            }
+            var command = new PublishChapterStatusCommand
             {
                 ChapterId = chapterId,
                 UserId = (long)userId,

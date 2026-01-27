@@ -56,7 +56,7 @@ namespace Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.Delet
             {
                 throw new BusinessRuleViolationException("Không thể thao tác trên chương của truyện đã bị xóa", "STORY_DELETED");
             }
-            if(chapter.Status == Domain.Enums.Chapter.ChapterStatus.Deleted)
+            if(chapter.Status == Domain.Enums.Chapter.ChapterStatus.Deleted && commad.UserRole != "Admin")
             {
                 throw new BusinessRuleViolationException("Không thể thao tác trên chương đã bị xóa", "CHAPTER_DELETED");
             }
