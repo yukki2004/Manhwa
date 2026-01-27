@@ -24,5 +24,11 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
             => await _context.Chapters
                 .Include(c => c.ChapterImages.OrderBy(i => i.OrderIndex))
                 .FirstOrDefaultAsync(c => c.ChapterId == chapterId, ct);
+        public async Task<Chapter?> GetWithStoryByIdAsync(long chapterId, CancellationToken ct = default)
+        {
+            return await _context.Chapters
+                .Include(c => c.Story)
+                .FirstOrDefaultAsync(c => c.ChapterId == chapterId, ct);
+        }
     }
 }
