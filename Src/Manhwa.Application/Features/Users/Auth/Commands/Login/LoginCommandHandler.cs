@@ -19,7 +19,8 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Login
         public readonly IUnitOfWork _unitOfWork;
         public readonly IRefreshTokenRepository _refreshTokenRepository;
         public readonly IPublishEndpoint _publishEndpoint;
-        public LoginCommandHandler(IPasswordHasher passwordHasher, IUserRepository userRepository, IIdentityService identityService, IUnitOfWork unitOfWork, IRefreshTokenRepository refreshTokenRepository, IPublishEndpoint publishEndpoint)
+        public readonly ICacheService _cacheService;
+        public LoginCommandHandler(IPasswordHasher passwordHasher, IUserRepository userRepository, IIdentityService identityService, IUnitOfWork unitOfWork, IRefreshTokenRepository refreshTokenRepository, IPublishEndpoint publishEndpoint, ICacheService cacheService)
         {
             _passwordHasher = passwordHasher;
             _userRepository = userRepository;
@@ -27,6 +28,7 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Login
             _unitOfWork = unitOfWork;
             _refreshTokenRepository = refreshTokenRepository;
             _publishEndpoint = publishEndpoint;
+            _cacheService = cacheService;
         }
         public async Task<LoginResponse> Handle(LoginCommand command, CancellationToken ct)
         {
@@ -55,6 +57,8 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Login
             };
             await _refreshTokenRepository.AddAsync(userRefreshToken, ct);
             await _unitOfWork.SaveChangesAsync(ct);
+            string redisKey = $"rt_map:{refreshToken}";
+            await _cacheService.SetAsync(redisKey, userLogin.UserId.ToString(), TimeSpan.FromDays(7), ct);
             await _publishEndpoint.Publish(new UserLoggedInIntegrationEvent
             {
                 UserId = userLogin.UserId,
