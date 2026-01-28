@@ -8,6 +8,7 @@ using Amazon.S3;
 using Manhwa.Application.Common.Interfaces;
 using Manhwa.Application.Common.Interfaces.Notifications;
 using Manhwa.Application.Common.Interfaces.Queries;
+using Manhwa.Application.Common.Interfaces.Ranking;
 using Manhwa.Domain.Repositories;
 using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.FileStorage;
@@ -17,6 +18,7 @@ using Manhwa.Infrastructure.Notifications.Strategies;
 using Manhwa.Infrastructure.Persistence;
 using Manhwa.Infrastructure.Persistence.Queries;
 using Manhwa.Infrastructure.Persistence.Repositories;
+using Manhwa.Infrastructure.Rankings.Strategies;
 using Manhwa.Infrastructure.Realtime.Services;
 using Manhwa.Infrastructure.Security;
 using MassTransit;
@@ -83,6 +85,7 @@ namespace Manhwa.Infrastructure
                 x.AddConsumer<PasswordNotificationConsumer>();
                 x.AddConsumer<ExpConsumer>();
                 x.AddConsumer<NotificationConsumer>();
+                x.AddConsumer<StoryInteractionConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -116,6 +119,11 @@ namespace Manhwa.Infrastructure
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
                         e.ConfigureConsumer<NotificationConsumer>(context);
+                    });
+                    cfg.ReceiveEndpoint("story-interaction-processing-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<StoryInteractionConsumer>(context);
                     });
                 });
             });
@@ -163,20 +171,25 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUserLogRepository, UserLogRepository>();
-            services.AddScoped<INotificationStrategy, LevelUpStrategy>(); 
-            services.AddScoped<INotificationStrategy, StoryAlertStrategy>();
-            services.AddScoped<INotificationStrategy, NewChapterStrategy>();
             services.AddScoped<IlevelExpRepository, LevelExpRepository>();
             services.AddScoped<IExpLogRepository, ExpLogRepository>();
             services.AddScoped<IExpActionRepository, ExpActionRepository>();
-            services.AddScoped<ICategoryQueries, CategoryQueries>();
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
             services.AddScoped<IChapterRepository, ChapterRepository>();
-            
+            services.AddScoped<IReadingHistoryRepository, ReadingHistoryRepository>();
+            //Strategy pattern 
+            services.AddScoped<IInteractionStrategy, ViewInteractionStrategy>();
+            services.AddScoped<IInteractionStrategy, FollowInteractionStrategy>();
+            services.AddScoped<IInteractionStrategy, CommentInteractionStrategy>();
+            services.AddScoped<INotificationStrategy, LevelUpStrategy>();
+            services.AddScoped<INotificationStrategy, StoryAlertStrategy>();
+            services.AddScoped<INotificationStrategy, NewChapterStrategy>();
             // queries
             services.AddScoped<IUserQueries, UserQueries>();
+            services.AddScoped<ICategoryQueries, CategoryQueries>();
+            services.AddScoped<IChapterQueries, ChapterQueries>();
 
             return services;
             

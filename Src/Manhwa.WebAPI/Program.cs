@@ -5,6 +5,7 @@ using Manhwa.Infrastructure;
 using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Middleware;
 using Manhwa.Infrastructure.Realtime.Hubs;
+using Manhwa.WebAPI.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
 
@@ -50,6 +51,7 @@ namespace Manhwa.WebAPI
             app.UseCors("AllowTestClient");
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseMiddleware<IdentityMiddleware>();
             app.UseAuthorization();
             app.MapHub<NotificationHub>("/hubs/notifications");
             app.MapControllers();

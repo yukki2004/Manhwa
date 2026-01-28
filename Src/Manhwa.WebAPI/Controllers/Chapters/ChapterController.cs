@@ -7,6 +7,7 @@ using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.DeleteCha
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.PublishChapterStatus;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapterStatus.HideChapterStatus;
 using Manhwa.Application.Features.Chapters.Command.UpdateChapter;
+using Manhwa.Application.Features.Chapters.Queries.ViewChapter;
 namespace Manhwa.WebAPI.Controllers.Chapters
 {
     [ApiController]
@@ -138,7 +139,27 @@ namespace Manhwa.WebAPI.Controllers.Chapters
             };
             var result = await _mediator.Send(command);
             return Ok(result);
-        }   
+        }
+        [HttpGet("{storySlug}/{chapterSlug}")]
+        public async Task<IActionResult> GetChapterDetail(string storySlug, string chapterSlug)
+        {
+            var identity = HttpContext.GetUserIdentity();
+
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+            var command = new ViewChapterCommand
+            {
+                UserId = userId,
+                UserRole = userRole,
+                Identity = identity,
+                StorySlug = storySlug,
+                ChapterSlugs = chapterSlug
+            };
+
+            var result = await _mediator.Send(command);
+
+            return Ok(result);
+        }
 
     }
 

@@ -50,24 +50,32 @@ namespace Manhwa.WebAPI.Controllers
                 UserAgent = userAgent
             };
             var result = await _mediator.Send(commandWithMetadata);
-            // Thiết lập Cookie bảo mật cho AccessToken
+            if (Request.Cookies.ContainsKey(IdentityConstants.GuestCookieName))
+            {
+                Response.Cookies.Delete(IdentityConstants.GuestCookieName, new CookieOptions
+                {
+                    Path = "/",
+                    Secure = true,
+                    SameSite = SameSiteMode.None
+                });
+            }
             var accessCookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Path = "/",
-                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15),
+                IsEssential = true
             };
-
-            // Thiết lập Cookie bảo mật cho RefreshToken
             var refreshCookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Path = "/api/auth",
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Path = "/",
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                IsEssential = true
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
             Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
@@ -93,15 +101,17 @@ namespace Manhwa.WebAPI.Controllers
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Path = "/",
-                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15),
+                IsEssential = true
             };
             var refreshCookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Path = "/api/auth",
-                Expires = DateTimeOffset.UtcNow.AddDays(7)
+                Path = "/",
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                IsEssential = true
             };
             Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
             Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
@@ -127,8 +137,8 @@ namespace Manhwa.WebAPI.Controllers
             };
             await _mediator.Send(command);
 
-            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/api" });
-            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/api/auth" });
+            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/" });
+            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/" });
 
             return Ok(new { Message = "Đã đăng xuất thành công." });
         }

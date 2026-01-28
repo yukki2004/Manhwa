@@ -43,5 +43,22 @@ namespace Manhwa.Infrastructure.Caching
         {
             return await _database.KeyExistsAsync(key);
         }
+
+        public async Task<long> IncrementAsync(string key, long value = 1, CancellationToken ct = default)
+        {
+            return await _database.StringIncrementAsync(key, value);
+        }
+        public async Task<double> SortedSetIncrementAsync(string key, string member, double value, CancellationToken ct = default)
+        {
+            return await _database.SortedSetIncrementAsync(key, member, value);
+        }
+        public async Task<bool> SetExpirationAsync(string key, TimeSpan expiration, CancellationToken ct = default)
+        {
+            return await _database.KeyExpireAsync(key, expiration, ExpireWhen.HasNoExpiry);
+        }
+        public async Task<long> DecrementAsync(string key, long value = 1, CancellationToken ct = default)
+        {
+            return await _database.StringDecrementAsync(key, value);
+        }
     }
 }

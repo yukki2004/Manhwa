@@ -70,7 +70,8 @@ namespace Manhwa.Application.Features.Chapters.Command.UpdateChapter
             chapter.ChapterNumber = command.ChapterNumber;
             chapter.Slug = $"chuong-{command.ChapterNumber.ToString().Replace(".", "-")}";
             chapter.UpdatedAt = DateTimeOffset.UtcNow;
-            if(command.Images != null && command.Images.Any())
+            chapter.Story.UpdatedAt = DateTimeOffset.UtcNow;
+            if (command.Images != null && command.Images.Any())
             {
                 var oldImages = chapter.ChapterImages.OrderBy(i => i.OrderIndex).ToList();
                 var oldCount = oldImages.Count;

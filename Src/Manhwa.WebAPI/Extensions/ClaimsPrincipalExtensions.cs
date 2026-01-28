@@ -13,5 +13,9 @@ namespace Manhwa.WebAPI.Extensions
             }
             return null;
         }
+        public static string GetUserRole(this ClaimsPrincipal user)
+        {
+            return user.FindFirst(ClaimTypes.Role)?.Value;
+        }
     }
 }

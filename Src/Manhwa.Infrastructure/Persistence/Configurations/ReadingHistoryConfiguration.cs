@@ -47,7 +47,7 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(rh => rh.Chapter)
-                   .WithMany() 
+                   .WithMany(c => c.ReadingHistories) 
                    .HasForeignKey(rh => rh.ChapterId)
                    .OnDelete(DeleteBehavior.Cascade);
         }
