@@ -15,12 +15,14 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.RefreshToken
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIdentityService _identityService;
         private readonly IUserRepository _userRepository;
-        public RefreshTokenCommandHandler(IRefreshTokenRepository refreshTokenRepository, IUnitOfWork unitOfWork, IIdentityService identityService, IUserRepository userRepository)
+        private readonly ICacheService _cacheService;
+        public RefreshTokenCommandHandler(IRefreshTokenRepository refreshTokenRepository, IUnitOfWork unitOfWork, IIdentityService identityService, IUserRepository userRepository, ICacheService cacheService)
         {
             _refreshTokenRepository = refreshTokenRepository;
             _unitOfWork = unitOfWork;
             _identityService = identityService;
             _userRepository = userRepository;
+            _cacheService = cacheService;
         }
         public async Task<RefreshTokenResponse> Handle(RefreshTokenCommand command, CancellationToken ct)
         {
@@ -40,6 +42,10 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.RefreshToken
             {
                 throw new UnauthorizedAccessException("Người dùng không tồn tại.");
             }
+            if(user.IsActive == false)
+            {
+                throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa.");
+            }
             var newAccessToken = _identityService.GenerateAccessToken(user);
             var newRefreshToken = _identityService.GenerateRefreshToken();
             var newRefreshTokenEntity = new Domain.Entities.RefreshToken
@@ -52,6 +58,10 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.RefreshToken
             };
             await _refreshTokenRepository.AddAsync(newRefreshTokenEntity, ct);
             await _unitOfWork.SaveChangesAsync(ct);
+            string removeRedisKey = $"rt_map:{command.RefreshToken}";
+            await _cacheService.RemoveAsync(removeRedisKey, ct);
+            string setRedisKey = $"rt_map:{newRefreshToken}";
+            await _cacheService.SetAsync(setRedisKey, user.UserId.ToString(), TimeSpan.FromDays(7), ct);
             return new RefreshTokenResponse
             {
                 AccessToken = newAccessToken,
