@@ -18,16 +18,19 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Logout
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIdentityService _identityService;
+        private readonly ICacheService _cacheService;
         public LogoutCommandHandler(
             IPublishEndpoint publishEndpoint,
             IRefreshTokenRepository refreshTokenRepository,
             IUnitOfWork unitOfWork,
-            IIdentityService identityService)
+            IIdentityService identityService,
+            ICacheService cacheService)
         {
             _publishEndpoint = publishEndpoint;
             _refreshTokenRepository = refreshTokenRepository;
             _unitOfWork = unitOfWork;
             _identityService = identityService;
+            _cacheService = cacheService;
         }
         public async Task<LogoutResponse> Handle(LogoutCommand command, CancellationToken ct)
         {
@@ -41,6 +44,8 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Logout
                 {
                     throw new SecurityTokenException("Invalid refresh token");
                 }
+                string redisKey = $"rt_map:{command.RefreshToken}";
+                await _cacheService.RemoveAsync(redisKey, ct);
 
             }
             await _publishEndpoint.Publish(new UserLoggedOutIntegrationEvent
