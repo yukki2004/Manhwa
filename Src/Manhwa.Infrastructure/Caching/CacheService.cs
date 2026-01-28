@@ -12,10 +12,11 @@ namespace Manhwa.Infrastructure.Caching
     public class CacheService : ICacheService
     {
         private readonly IDatabase _database;
-
+        private readonly IConnectionMultiplexer _redis; 
         public CacheService(IConnectionMultiplexer redis)
         {
             _database = redis.GetDatabase();
+            _redis = redis; 
         }
 
         public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
@@ -60,5 +61,33 @@ namespace Manhwa.Infrastructure.Caching
         {
             return await _database.StringDecrementAsync(key, value);
         }
+        public async Task<long> GetAndDeleteViewAsync(string key)
+        {
+            var luaScript = @"
+            local val = redis.call('GET', KEYS[1])
+            if val then
+                redis.call('DEL', KEYS[1])
+                return tonumber(val)
+            else
+                return 0
+            end";
+
+            var result = await _database.ScriptEvaluateAsync(luaScript, new RedisKey[] { key });
+            return (long)result;
+        }
+        public async Task<IEnumerable<string>> GetKeysAsync(string pattern)
+        {
+            var keys = new List<string>();
+            foreach (var endpoint in _redis.GetEndPoints())
+            {
+                var server = _redis.GetServer(endpoint);
+                await foreach (var key in server.KeysAsync(pattern: pattern))
+                {
+                    keys.Add(key.ToString());
+                }
+            }
+            return keys.Distinct();
+        }
+
     }
 }

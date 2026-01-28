@@ -10,6 +10,7 @@ using Manhwa.Application.Common.Interfaces.Notifications;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Common.Interfaces.Ranking;
 using Manhwa.Domain.Repositories;
+using Manhwa.Infrastructure.BackgroundTasks;
 using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Identity;
@@ -162,7 +163,7 @@ namespace Manhwa.Infrastructure
             // service
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICacheService, CacheService>();
+            services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IStorageService, CloudflareR2Service>();
             services.AddSignalR();
             services.AddScoped<IRealtimeService, RealtimeService>();
@@ -190,7 +191,8 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IUserQueries, UserQueries>();
             services.AddScoped<ICategoryQueries, CategoryQueries>();
             services.AddScoped<IChapterQueries, ChapterQueries>();
-
+            // background
+            services.AddHostedService<ViewSyncWorker>();
             return services;
             
         }

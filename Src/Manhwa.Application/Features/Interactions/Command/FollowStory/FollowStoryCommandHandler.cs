@@ -77,6 +77,14 @@ namespace Manhwa.Application.Features.Interactions.Command.FollowStory
                 UserId = user.UserId,
                 Action = ExpActionType.FollowStory
             }, ct);
+            await _publishEndpoint.Publish(new StoryInteractionEvent
+            {
+                StoryId = story.StoryId,
+                ChapterId = null,
+                Identity = $"u_{command.UserId}",
+                ActionType = InteractionType.Follow,
+
+            });
             var respone = new FollowStoryResponse
             {
                 IsFollowing = true,

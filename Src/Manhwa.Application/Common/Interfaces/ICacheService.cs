@@ -16,6 +16,8 @@ namespace Manhwa.Application.Common.Interfaces
         Task<double> SortedSetIncrementAsync(string key, string member, double value, CancellationToken ct = default);
         Task<bool> SetExpirationAsync(string key, TimeSpan expiration, CancellationToken ct = default);
         Task<long> DecrementAsync(string key, long value = 1, CancellationToken ct = default);
+        Task<IEnumerable<string>> GetKeysAsync(string pattern);
+        Task<long> GetAndDeleteViewAsync(string key);
 
     }
 }
