@@ -127,7 +127,7 @@ namespace Manhwa.Application.Features.Chapters.Command.AddChapter
                 Action = ExpActionType.CreateChapter
             }, ct);
             var useFollowers = await _userRepository.GetFollowersByStoryIdAsync(story.StoryId, ct);
-            if(useFollowers != null)
+            if(useFollowers != null && useFollowers.Any())
             {
                 var rawDataJson = new
                 {
