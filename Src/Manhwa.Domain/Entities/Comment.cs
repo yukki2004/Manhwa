@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manhwa.Domain.Enums.Comment;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Manhwa.Domain.Entities
     {
         public long CommentId { get; set; }
         public string Content { get; set; } = null!;
+        public CommentStatus Status { get; set; } = CommentStatus.Published;
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 

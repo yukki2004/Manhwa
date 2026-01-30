@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Manhwa.Domain.Enums.Comment;
 
 namespace Manhwa.Infrastructure.Persistence.Configurations
 {
@@ -18,6 +19,12 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
 
             builder.Property(c => c.CommentId).HasColumnName("comment_id");
             builder.Property(c => c.Content).HasColumnName("content").HasColumnType("text").IsRequired();
+
+            builder.Property(c => c.Status)
+                               .HasColumnName("status")
+                               .HasConversion<short>()
+                               .HasDefaultValue(CommentStatus.Published)
+                               .IsRequired();
 
             // Audit Fields
             builder.Property(c => c.CreatedAt)
