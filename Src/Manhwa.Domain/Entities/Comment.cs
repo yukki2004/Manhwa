@@ -16,7 +16,7 @@ namespace Manhwa.Domain.Entities
         // Foreign Keys
         public long? UserId { get; set; }
         public long StoryId { get; set; }
-        public long ChapterId { get; set; }
+        public long? ChapterId { get; set; }
         public long? ParentId { get; set; }
 
         // Navigation Properties

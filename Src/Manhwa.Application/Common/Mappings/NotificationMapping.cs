@@ -28,7 +28,7 @@ namespace Manhwa.Application.Common.Mappings
             if (notification.Sender != null)
             {
                 result.SenderName = notification.Sender.Username;
-                result.SenderAvatar = notification.Sender.Avatar.ToFullUrl();
+                result.SenderAvatar = $"{notification.Sender.Avatar.ToFullUrl()}?v={(notification.Sender.UpdatedAt).Ticks}";
             }
             else
             {

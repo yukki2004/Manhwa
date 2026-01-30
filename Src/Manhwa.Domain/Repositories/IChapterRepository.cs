@@ -10,6 +10,7 @@ namespace Manhwa.Domain.Repositories
     public interface IChapterRepository
     {
         Task AddAsync(Chapter chapter, CancellationToken ct = default);
+        Task<Chapter?> GetByIdAsync(long id, CancellationToken ct = default);
         Task AddImagesAsync(IEnumerable<ChapterImage> images, CancellationToken ct = default);
         Task RemoveAllImagesAsync(long chapterId, CancellationToken ct = default);
         Task<Chapter?> GetWithStoryByIdAsync(long chapterId, CancellationToken ct = default);

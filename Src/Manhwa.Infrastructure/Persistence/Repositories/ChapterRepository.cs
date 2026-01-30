@@ -42,5 +42,9 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                 .Include(c => c.ChapterImages) 
                 .FirstOrDefaultAsync(c => c.ChapterId == id, ct);
         }
+        public async Task<Chapter?> GetByIdAsync(long id, CancellationToken ct)
+        {
+            return await _context.Chapters.FindAsync(id, ct);
+        }
     }
 }

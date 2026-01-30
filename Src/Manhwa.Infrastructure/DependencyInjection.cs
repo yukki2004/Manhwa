@@ -180,6 +180,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IUserFavoriteRepository, UserFavoriteRepository>();
             services.AddScoped<IChapterRepository, ChapterRepository>();
             services.AddScoped<IReadingHistoryRepository, ReadingHistoryRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
             //Strategy pattern 
             services.AddScoped<IInteractionStrategy, ViewInteractionStrategy>();
             services.AddScoped<IInteractionStrategy, FollowInteractionStrategy>();
@@ -187,6 +188,8 @@ namespace Manhwa.Infrastructure
             services.AddScoped<INotificationStrategy, LevelUpStrategy>();
             services.AddScoped<INotificationStrategy, StoryAlertStrategy>();
             services.AddScoped<INotificationStrategy, NewChapterStrategy>();
+            services.AddScoped<INotificationStrategy, NewCommentOnStoryStrategy>();
+            services.AddScoped<INotificationStrategy, CommentReplyStrategy>();
             // queries
             services.AddScoped<IUserQueries, UserQueries>();
             services.AddScoped<ICategoryQueries, CategoryQueries>();
