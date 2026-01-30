@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Features.Interactions.Command.CreateComment;
 using Manhwa.Application.Features.Interactions.Command.DeleteComment;
 using Manhwa.Application.Features.Interactions.Command.FollowStory;
+using Manhwa.Application.Features.Interactions.Command.PublishComment;
 using Manhwa.Application.Features.Interactions.Command.Unfollow;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -97,6 +98,30 @@ namespace Manhwa.WebAPI.Controllers.Interactions
             }
 
             var result = await _mediator.Send(new DeleteCommentCommand
+            {
+                CommentId = id,
+                UserId = (long)userId,
+                UserRole = userRole
+            });
+
+            return Ok(result);
+        }
+        [HttpPatch("comment/{id}")]
+        [Authorize]
+        public async Task<IActionResult> PublishComment([FromRoute]   long id)
+        {
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new PublishCommentCommand
             {
                 CommentId = id,
                 UserId = (long)userId,
