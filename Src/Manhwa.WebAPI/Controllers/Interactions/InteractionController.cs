@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Features.Interactions.Command.CreateComment;
 using Manhwa.Application.Features.Interactions.Command.DeleteComment;
 using Manhwa.Application.Features.Interactions.Command.FollowStory;
+using Manhwa.Application.Features.Interactions.Command.HideComment;
 using Manhwa.Application.Features.Interactions.Command.PublishComment;
 using Manhwa.Application.Features.Interactions.Command.Unfollow;
 using Manhwa.WebAPI.Extensions;
@@ -106,7 +107,7 @@ namespace Manhwa.WebAPI.Controllers.Interactions
 
             return Ok(result);
         }
-        [HttpPatch("comment/{id}")]
+        [HttpPatch("comment/{id}/publish")]
         [Authorize]
         public async Task<IActionResult> PublishComment([FromRoute]   long id)
         {
@@ -122,6 +123,30 @@ namespace Manhwa.WebAPI.Controllers.Interactions
             }
 
             var result = await _mediator.Send(new PublishCommentCommand
+            {
+                CommentId = id,
+                UserId = (long)userId,
+                UserRole = userRole
+            });
+
+            return Ok(result);
+        }
+        [HttpPatch("comment/{id}/hide")]
+        [Authorize]
+        public async Task<IActionResult> HideComment([FromRoute] long id)
+        {
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            if (userRole == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new HideCommentCommand
             {
                 CommentId = id,
                 UserId = (long)userId,
