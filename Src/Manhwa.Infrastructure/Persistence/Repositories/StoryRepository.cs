@@ -35,5 +35,13 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                 .ThenInclude(sc => sc.Category)
                 .FirstOrDefaultAsync(s => s.StoryId == id, ct);
         }
+        public async Task<List<Story>> GetActiveStoriesByIdsAsync(List<long> ids, CancellationToken ct = default)
+        {
+            return await _appDbContext.Set<Story>()
+                .Where(s => ids.Contains(s.StoryId)
+                         && s.IsPublish == Domain.Enums.Story.StoryPublishStatus.Published)          
+                .AsNoTracking()                    
+                .ToListAsync(ct);
+        }
     }
 }

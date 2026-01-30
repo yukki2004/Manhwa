@@ -16,7 +16,7 @@ namespace Manhwa.Domain.Entities
         public string? Avatar { get; set; }
         public LoginType LoginType { get; set; }
         public string? GoogleId { get; set; }
-        public UserRole Role { get; set; }
+        public UserRole? Role { get; set; }
         public int CurrentExp { get; set; } = 0;
         public short Level { get; set; } = 0;
         public bool IsActive { get; set; } = true;

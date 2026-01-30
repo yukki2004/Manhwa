@@ -27,7 +27,6 @@
   <ItemGroup>
     <Folder Include="Features\Community\" />
     <Folder Include="Features\Notifications\" />
-    <Folder Include="Features\Stories\Queries\" />
   </ItemGroup>
 
 </Project>

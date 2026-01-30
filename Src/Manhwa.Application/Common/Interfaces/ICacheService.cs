@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manhwa.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,11 @@ namespace Manhwa.Application.Common.Interfaces
         Task<long> DecrementAsync(string key, long value = 1, CancellationToken ct = default);
         Task<IEnumerable<string>> GetKeysAsync(string pattern);
         Task<long> GetAndDeleteViewAsync(string key);
+        Task<(List<string> IDs, int TotalCount)> GetSortedSetPagedAsync(string key, int pageIndex, int pageSize, CancellationToken ct = default);
+
+        Task<string> ResolveRankingKeyAsync(RankingType type, CancellationToken ct = default);
+
+        Task<string?> GetLatestKeyByPatternAsync(string pattern, CancellationToken ct = default);
 
     }
 }

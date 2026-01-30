@@ -18,7 +18,7 @@ namespace Manhwa.Application.Features.Users.Profile.Queries.GetMyProfile
         public short Level { get; set; }
         public bool IsActive { get; set; }
         public LoginType LoginType { get; set; }
-        public UserRole Role { get; set; }
+        public UserRole? Role { get; set; }
         public DateTimeOffset CreateAt { get; set; }
 
     }

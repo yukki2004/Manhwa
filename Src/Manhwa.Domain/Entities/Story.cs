@@ -20,7 +20,7 @@ namespace Manhwa.Domain.Entities
         public StoryStatus Status { get; set; }
         public bool IsHot { get; set; }
         public int FollowCount { get; set; } 
-        public StoryPublishStatus IsPublish { get; set; }
+        public StoryPublishStatus? IsPublish { get; set; }
         public int TotalView { get; set; }
         public int RateSum { get; set; }
         public int RateCount { get; set; }

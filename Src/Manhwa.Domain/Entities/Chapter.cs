@@ -14,7 +14,7 @@ namespace Manhwa.Domain.Entities
         public string Slug { get; set; } = null!; 
         public double ChapterNumber { get; set; }
         public int TotalView { get; set; }
-        public ChapterStatus Status { get; set; }
+        public ChapterStatus? Status { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 

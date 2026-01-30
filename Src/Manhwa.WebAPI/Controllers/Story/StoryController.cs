@@ -10,6 +10,7 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryAvatar;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.CompleteStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.DropStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
+using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -248,6 +249,13 @@ namespace Manhwa.WebAPI.Controllers.Story
                 AuthorName = request.AuthorName,
                 CategoryIds = request.CategoryIds
             };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPost("ranking")]
+        public async Task<IActionResult> GetRanking()
+        {
+            var command = new GetHomeRankingsQuery();
             var result = await _mediator.Send(command);
             return Ok(result);
         }
