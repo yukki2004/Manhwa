@@ -4,6 +4,7 @@ using Manhwa.Application.Features.Interactions.Command.FollowStory;
 using Manhwa.Application.Features.Interactions.Command.HideComment;
 using Manhwa.Application.Features.Interactions.Command.PublishComment;
 using Manhwa.Application.Features.Interactions.Command.Unfollow;
+using Manhwa.Application.Features.Interactions.Command.UpdateComment;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -151,6 +152,27 @@ namespace Manhwa.WebAPI.Controllers.Interactions
                 CommentId = id,
                 UserId = (long)userId,
                 UserRole = userRole
+            });
+
+            return Ok(result);
+        }
+        [HttpPut("comment/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Update(long id, [FromBody] UpdateCommentRequest request)
+        {
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+            if(userId == null || userRole == null)
+            {
+                return Unauthorized();
+            }
+
+            var result = await _mediator.Send(new UpdateCommentCommand
+            {
+                CommentId = id,
+                UserId = (long)userId,
+                UserRole = userRole,
+                Content = request.Content
             });
 
             return Ok(result);
