@@ -11,6 +11,7 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.CompleteStor
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.DropStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
 using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
+using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -257,6 +258,12 @@ namespace Manhwa.WebAPI.Controllers.Story
         {
             var command = new GetHomeRankingsQuery();
             var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllStory([FromQuery] GetHomeStoriesQuery query)
+        {
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 

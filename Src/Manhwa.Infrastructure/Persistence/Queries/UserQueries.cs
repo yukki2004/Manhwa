@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Common.Abstractions;
 using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
+using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
 using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
@@ -108,5 +109,6 @@ namespace Manhwa.Infrastructure.Persistence.Queries
 
             return await finalQuery.ToPagedListAsync(pageIndex, pageSize, ct);
         }
+
     }
 }
