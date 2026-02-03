@@ -10,6 +10,7 @@ namespace Manhwa.Domain.Entities
     {
         public long StoryId { get; set; }
         public long UserId { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         // Navigation properties
         public Story Story { get; set; } = null!;

@@ -25,6 +25,12 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
             builder.Property(uf => uf.UserId)
                    .HasColumnName("user_id");
 
+            builder.Property(f => f.CreatedAt)
+               .HasColumnName("create_at")
+               .HasColumnType("timestamptz")
+               .HasDefaultValueSql("now()")
+               .ValueGeneratedOnAdd(); 
+
             // Thiết lập quan hệ với User (FK: user_id)
             builder.HasOne(uf => uf.User)
                    .WithMany(u => u.UserFavorites)

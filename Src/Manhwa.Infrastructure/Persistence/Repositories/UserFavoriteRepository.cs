@@ -1,5 +1,10 @@
-﻿using Manhwa.Domain.Entities;
+﻿using Manhwa.Application.Common.Abstractions;
+using Manhwa.Application.Common.Extensions;
+using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
+using Manhwa.Domain.Entities;
+using Manhwa.Domain.Enums.Story;
 using Manhwa.Domain.Repositories;
+using Manhwa.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,5 +32,6 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
         public async Task<bool> IsFavoriteAsync(long userId, long storyId, CancellationToken ct = default)
             => await _context.UserFavorites
                 .AnyAsync(f => f.UserId == userId && f.StoryId == storyId, ct);
+
     }
 }

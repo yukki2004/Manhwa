@@ -2,6 +2,9 @@
 using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
+using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
+using Manhwa.Domain.Entities;
+using Manhwa.Domain.Enums.Story;
 using Manhwa.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -51,6 +54,32 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 .OrderByDescending(x => x.CreatedAt)
                 .ToPagedListAsync(request.PageIndex, request.PageSize, ct);
         }
-    
+        public async Task<PagedResult<UserFavoriteDto>> GetPagedFavoritesWithChaptersAsync(
+    long userId, int pageIndex, int pageSize, CancellationToken ct)
+        {
+            return await _context.Set<UserFavorite>()
+                .AsNoTracking()
+                .Where(f => f.UserId == userId && f.Story.IsPublish == StoryPublishStatus.Published)
+                .OrderByDescending(f => f.CreatedAt)
+                .Select(f => new UserFavoriteDto
+                {
+                    StoryId = f.StoryId,
+                    Title = f.Story.Title,
+                    Slug = f.Story.Slug,
+                    Thumbnail = f.Story.ThumbnailUrl.ToFullUrl(),
+                    RecentChapters = f.Story.Chapters
+                        .OrderByDescending(c => c.CreatedAt)
+                        .Take(3)
+                        .Select(c => new RecentChapterDto
+                        {
+                            ChapterId = c.ChapterId,
+                            Slug = c.Slug,
+                            Title = c.Title ?? "chương mới",
+                            CreateAt = c.CreatedAt,
+                        }).ToList()
+                })
+                .ToPagedListAsync(pageIndex, pageSize, ct);
+        }
+
     }
 }

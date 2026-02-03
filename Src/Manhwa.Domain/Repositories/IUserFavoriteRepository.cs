@@ -13,6 +13,7 @@ namespace Manhwa.Domain.Repositories
         void Remove(UserFavorite favorite);
         Task<UserFavorite?> GetAsync(long userId, long storyId, CancellationToken ct = default);
         Task<bool> IsFavoriteAsync(long userId, long storyId, CancellationToken ct = default);
+
     }
 }
 
