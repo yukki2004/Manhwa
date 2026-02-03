@@ -181,6 +181,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IChapterRepository, ChapterRepository>();
             services.AddScoped<IReadingHistoryRepository, ReadingHistoryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
             //Strategy pattern 
             services.AddScoped<IInteractionStrategy, ViewInteractionStrategy>();
             services.AddScoped<IInteractionStrategy, FollowInteractionStrategy>();

@@ -3,6 +3,7 @@ using Manhwa.Application.Features.Interactions.Command.DeleteComment;
 using Manhwa.Application.Features.Interactions.Command.FollowStory;
 using Manhwa.Application.Features.Interactions.Command.HideComment;
 using Manhwa.Application.Features.Interactions.Command.PublishComment;
+using Manhwa.Application.Features.Interactions.Command.Rating;
 using Manhwa.Application.Features.Interactions.Command.Unfollow;
 using Manhwa.Application.Features.Interactions.Command.UpdateComment;
 using Manhwa.WebAPI.Extensions;
@@ -175,6 +176,26 @@ namespace Manhwa.WebAPI.Controllers.Interactions
                 Content = request.Content
             });
 
+            return Ok(result);
+        }
+        [HttpPut("stories/{storyId}/rating")]
+        [Authorize]
+        public async Task<IActionResult> RatingStory([FromRoute] long storyId, RateStoryRequest request)
+        {
+            var userId = User.GetUserId();
+            var userRole = User.GetUserRole();
+            if(userId == null || userRole == null)
+            {
+                return Unauthorized();
+            }
+            var command = new RateStoryCommand
+            {
+                StoryId = storyId,
+                UserId = (long)userId,
+                UserRole = userRole,
+                Score = request.Score,
+            };
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
     }

@@ -55,6 +55,7 @@ namespace Manhwa.WebAPI.Middleware
                             HttpOnly = true,
                             Secure = true,
                             SameSite = SameSiteMode.None,
+                            Path = "/",
                             Expires = DateTimeOffset.UtcNow.AddDays(30),
                             IsEssential = true
                         };

@@ -43,5 +43,16 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                 .AsNoTracking()                    
                 .ToListAsync(ct);
         }
+        public async Task UpdateStoryStatsAsync(long storyId, int oldScore, int newScore, bool isNewRating, CancellationToken ct)
+        {
+            await _appDbContext.Set<Story>()
+                .Where(s => s.StoryId == storyId)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(b => b.RateSum, b => b.RateSum - oldScore + newScore)
+                    .SetProperty(b => b.RateCount, b => isNewRating ? b.RateCount + 1 : b.RateCount)
+                    .SetProperty(b => b.RateAvg, b =>
+                        (decimal)(b.RateSum - oldScore + newScore) / (isNewRating ? b.RateCount + 1 : b.RateCount)),
+                ct);
+        }
     }
 }
