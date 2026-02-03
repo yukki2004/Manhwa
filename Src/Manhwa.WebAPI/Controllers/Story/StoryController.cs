@@ -10,6 +10,7 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryAvatar;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.CompleteStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.DropStory;
 using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
+using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.WebAPI.Extensions;
@@ -262,6 +263,12 @@ namespace Manhwa.WebAPI.Controllers.Story
         }
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAllStory([FromQuery] GetHomeStoriesQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterStories([FromQuery] FilterStoriesQuery query)
         {
             var result = await _mediator.Send(query);
             return Ok(result);

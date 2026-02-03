@@ -1,4 +1,5 @@
 ﻿using Manhwa.Application.Common.Abstractions;
+using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace Manhwa.Application.Common.Interfaces.Queries
     public interface IStoryQueries
     {
         Task<PagedResult<HomeStoryDto>> GetPagedHomeStoriesAsync(int pageIndex, int pageSize, CancellationToken ct);
+        Task<PagedResult<FilteredStoryDto>> GetFilteredStoriesAsync(FilterStoriesQuery request, CancellationToken ct);
     }
 }
