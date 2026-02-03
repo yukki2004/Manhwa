@@ -3,6 +3,7 @@ using Manhwa.Application.Features.Users.Profile.Command.UpdateAvt;
 using Manhwa.Application.Features.Users.Profile.Command.UpdateProfile;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
 using Manhwa.Application.Features.Users.Profile.Queries.GetMyProfile;
+using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
 using Manhwa.Application.Features.Users.Profile.Queries.GetUserProfile;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -113,6 +114,16 @@ namespace Manhwa.WebAPI.Controllers
         [HttpGet("favorites")]
         [Authorize]
         public async Task<IActionResult> Getfavorites([FromQuery] GetFavoriteStoriesQuery query, CancellationToken ct)
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return NotFound();
+            query.UserId = (long)userId;
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+        [HttpGet("histories")]
+        [Authorize]
+        public async Task<IActionResult> GetHistories([FromQuery] GetReadingHistoryQuery query, CancellationToken ct)
         {
             var userId = User.GetUserId();
             if (userId == null) return NotFound();

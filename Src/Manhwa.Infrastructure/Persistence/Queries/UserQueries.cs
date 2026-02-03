@@ -3,6 +3,7 @@ using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
+using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
 using Manhwa.Domain.Entities;
 using Manhwa.Domain.Enums.Story;
 using Manhwa.Infrastructure.Extensions;
@@ -80,6 +81,32 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 })
                 .ToPagedListAsync(pageIndex, pageSize, ct);
         }
+        public async Task<PagedResult<ReadingHistoryDto>> GetPagedReadingHistoryAsync(
+            long userId, int pageIndex, int pageSize, CancellationToken ct)
+        {
+            var baseQuery = _context.Set<ReadingHistory>()
+                .AsNoTracking()
+                .Where(rh => rh.UserId == userId && rh.Story.IsPublish == StoryPublishStatus.Published);
 
+            var latestHistoryQuery = baseQuery.Where(rh => rh.LastReadAt == _context.Set<ReadingHistory>()
+                .Where(inner => inner.UserId == userId && inner.StoryId == rh.StoryId)
+                .Max(inner => inner.LastReadAt));
+
+            var finalQuery = latestHistoryQuery
+                .OrderByDescending(rh => rh.LastReadAt)
+                .Select(rh => new ReadingHistoryDto
+                {
+                    StoryId = rh.StoryId,
+                    StoryTitle = rh.Story.Title,
+                    StorySlug = rh.Story.Slug,
+                    Thumbnail = rh.Story.ThumbnailUrl.ToFullUrl(),
+                    ChapterId = rh.ChapterId,
+                    ChapterTitle = rh.Chapter.Title ?? "Chương " + rh.Chapter.ChapterNumber,
+                    ChapterSlug = rh.Chapter.Slug,
+                    LastReadAt = rh.LastReadAt
+                });
+
+            return await finalQuery.ToPagedListAsync(pageIndex, pageSize, ct);
+        }
     }
 }

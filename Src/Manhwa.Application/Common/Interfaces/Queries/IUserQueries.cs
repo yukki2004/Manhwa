@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Common.Abstractions;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
+using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Manhwa.Application.Common.Interfaces.Queries
     {
         Task<PagedResult<GetAllUsersDto>> GetAllUsersAsync(GetAllUsersQuery request, CancellationToken ct);
         Task<PagedResult<UserFavoriteDto>> GetPagedFavoritesWithChaptersAsync(
+            long userId, int pageIndex, int pageSize, CancellationToken ct);
+        Task<PagedResult<ReadingHistoryDto>> GetPagedReadingHistoryAsync(
             long userId, int pageIndex, int pageSize, CancellationToken ct);
     }
 }
