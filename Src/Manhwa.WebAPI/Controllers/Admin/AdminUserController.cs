@@ -1,4 +1,6 @@
 ﻿using Manhwa.Application.Features.Users.Management.Command.UpdateUserStatus;
+using Manhwa.Application.Features.Users.Management.Command.UpdateUserStatus.ActiveUser;
+using Manhwa.Application.Features.Users.Management.Command.UpdateUserStatus.LockUser;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -14,24 +16,25 @@ namespace Manhwa.WebAPI.Controllers.Admin
     {
         private readonly IMediator _mediator;
         public AdminUserController(IMediator mediator) => _mediator = mediator;
-        [HttpPut("{id}/status")]
-        [Authorize(Roles = "Admin")]
-
-        public async Task<IActionResult> ToggleStatus(long id, [FromBody] UpdateUserStatusRequest request)
+        [HttpPatch("{userId}/lock")]
+        public async Task<IActionResult> LockUser([FromRoute] long userId)
         {
-            var result = await _mediator.Send(new UpdateUserStatusCommand
+            var command = new LockUserCommand
             {
-                UserId = id,
-                IsActive = request.IsActive,
-                IpAddress = HttpContext.GetRemoteIpAddress(),
-                UserAgent = Request.Headers["User-Agent"].ToString()
-            });
-
-            return Ok(new
+                UserId = userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{userId}/active")]
+        public async Task<IActionResult> ActiveUser([FromRoute] long userId)
+        {
+            var command = new ActiveUserCommand
             {
-                Success = result,
-                Message = request.IsActive ? "Mở khóa thành công." : "Đã khóa và đăng xuất khỏi các thiết bị."
-            });
+                UserId = userId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
         [HttpGet("get-users")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllUsersQuery query)
