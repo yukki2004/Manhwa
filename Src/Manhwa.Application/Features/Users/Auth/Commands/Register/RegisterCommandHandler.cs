@@ -58,7 +58,16 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.Register
                 IpAddress = command.IpAddress,
                 CreateAt = DateTimeOffset.UtcNow,
             }, ct);
-
+            await _publishEndpoint.Publish(new SendEmailIntegrationEvent
+            {
+                To = newUser.Email,
+                Subject = "Chào mừng bạn gia nhập thế giới TruyenVerse!",
+                TemplateName = "WELCOME_NEW_USER",
+                TemplateData = new Dictionary<string, string>
+                {
+                    { "Username", newUser.Username }
+                }
+            }, ct);
             return new RegisterResponse
             {
                 Message = "Đăng ký thành công"

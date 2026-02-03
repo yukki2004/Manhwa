@@ -2,6 +2,7 @@
 using Manhwa.Application.Common.Messaging;
 using Manhwa.Domain.Repositories;
 using MassTransit;
+using MassTransit.Internals.GraphValidation;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,13 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.ForgotPassword
             await _cacheService.SetAsync(otpKey, otpCode, TimeSpan.FromMinutes(5), ct);
             await _cacheService.SetAsync(lockKey, "1", TimeSpan.FromSeconds(60), ct);
 
-            await _publishEndpoint.Publish(new SendOtpEmailEvent { Email = request.Email, OtpCode = otpCode}, ct);
+            await _publishEndpoint.Publish(new SendEmailIntegrationEvent
+            {
+                To = request.Email,
+                Subject = "Xác thực đặt lại mật khẩu",
+                TemplateName = "OTP_VERIFY",
+                TemplateData = new Dictionary<string, string> { { "OtpCode", otpCode } }
+            });
 
             return true;
         }

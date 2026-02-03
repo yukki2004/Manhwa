@@ -61,13 +61,17 @@ namespace Manhwa.Application.Features.Users.Auth.Commands.ResetPassword
                 Action = Domain.Enums.UserLogAction.ResetPassword,
                 CreateAt = DateTimeOffset.UtcNow
             }, ct);
-            await _publishEndpoint.Publish(new PasswordChangedNotificationEvent
+            await _publishEndpoint.Publish(new SendEmailIntegrationEvent
             {
-                Email = user.Email,
-                Username = user.Username,
-                IpAddress = command.IpAddress,
-                UserAgent = command.UserAgent,
-            }, ct);
+                To = user.Email,
+                Subject = "Cảnh báo bảo mật: Thay đổi mật khẩu",
+                TemplateName = "PASSWORD_CHANGED",
+                TemplateData = new Dictionary<string, string> {
+                                    { "Username", user.Username },
+                                    { "IpAddress", command.IpAddress },
+                                    { "UserAgent", command.UserAgent }
+                }
+            });
             return true;
         }
     }

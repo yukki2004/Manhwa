@@ -14,6 +14,7 @@ using Manhwa.Infrastructure.BackgroundTasks;
 using Manhwa.Infrastructure.Caching;
 using Manhwa.Infrastructure.FileStorage;
 using Manhwa.Infrastructure.Identity;
+using Manhwa.Infrastructure.Messaging;
 using Manhwa.Infrastructure.Messaging.Consumers;
 using Manhwa.Infrastructure.Notifications.Strategies;
 using Manhwa.Infrastructure.Persistence;
@@ -82,11 +83,10 @@ namespace Manhwa.Infrastructure
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<UserLogConsumer>();
-                x.AddConsumer<SendOtpEmailConsumer>();
-                x.AddConsumer<PasswordNotificationConsumer>();
                 x.AddConsumer<ExpConsumer>();
                 x.AddConsumer<NotificationConsumer>();
                 x.AddConsumer<StoryInteractionConsumer>();
+                x.AddConsumer<EmailNotificationConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -100,16 +100,6 @@ namespace Manhwa.Infrastructure
                     {
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                         e.ConfigureConsumer<UserLogConsumer>(context);
-                    });
-                    cfg.ReceiveEndpoint("send-otp-email-queue", e =>
-                    {
-                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
-                        e.ConfigureConsumer<SendOtpEmailConsumer>(context);
-                    });
-                    cfg.ReceiveEndpoint("password-notification-queue", e =>
-                    {
-                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
-                        e.ConfigureConsumer<PasswordNotificationConsumer>(context);
                     });
                     cfg.ReceiveEndpoint("exp-processing-queue", e =>
                     {
@@ -126,6 +116,12 @@ namespace Manhwa.Infrastructure
                         e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
                         e.ConfigureConsumer<StoryInteractionConsumer>(context);
                     });
+                    cfg.ReceiveEndpoint("email-interaction-processing-queue", e =>
+                    {
+                        e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(10)));
+                        e.ConfigureConsumer<EmailNotificationConsumer>(context);
+                    });
+
                 });
             });
             // cấu hình redis
@@ -167,6 +163,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IStorageService, CloudflareR2Service>();
             services.AddSignalR();
             services.AddScoped<IRealtimeService, RealtimeService>();
+            services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             // repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
