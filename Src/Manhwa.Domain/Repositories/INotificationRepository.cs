@@ -12,5 +12,7 @@ namespace Manhwa.Domain.Repositories
         Task AddAsync(Notification notification, CancellationToken ct = default);
         Task AddUserNotificationsAsync(IEnumerable<UserNotification> userNotifications, CancellationToken ct = default);
         Task<User?> GetSenderAsync(long senderId, CancellationToken ct = default);
+        Task MarkAsReadAsync(long userId, long notificationId, CancellationToken ct);
+        Task MarkAllAsReadAsync(long userId, CancellationToken ct);
     }
 }

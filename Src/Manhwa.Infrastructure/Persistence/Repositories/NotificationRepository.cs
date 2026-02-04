@@ -39,5 +39,20 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                 })
                 .FirstOrDefaultAsync(ct);
         }
+        public async Task MarkAsReadAsync(long userId, long notificationId, CancellationToken ct)
+        {
+            await _context.Set<UserNotification>()
+                .Where(un => un.UserId == userId && un.NotificationId == notificationId && !un.IsRead)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(un => un.IsRead, true), ct);
+        }
+
+        public async Task MarkAllAsReadAsync(long userId, CancellationToken ct)
+        {
+            await _context.Set<UserNotification>()
+                .Where(un => un.UserId == userId && !un.IsRead)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(un => un.IsRead, true), ct);
+        }
     }
 }
