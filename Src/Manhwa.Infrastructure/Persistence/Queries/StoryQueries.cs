@@ -3,6 +3,7 @@ using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.Domain.Entities;
 using Manhwa.Domain.Enums.Story;
@@ -135,7 +136,9 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     s.ReleaseYear,
                     s.CreatedAt,
                     s.TotalView,
+                    s.Status,
                     s.RateCount,
+                    FavoriteCount = s.UserFavorites.Count(),
                     TotalChapters = s.Chapters.Count(), 
                     Genres = s.StoryCategories.Select(sc => new CategoryStoryDetailDto
                     {
@@ -169,15 +172,47 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 Description = storyInfo.Description,
                 Author = storyInfo.Author,
                 CreateAt = storyInfo.CreatedAt,
+                Status = storyInfo.Status,
                 Realease_year = storyInfo.ReleaseYear,
                 TotalView = storyInfo.TotalView,
                 Thumbnail = storyInfo.Thumbnail.ToFullUrl(),
                 RateAvg = storyInfo.RateAvg,
                 RateCount = storyInfo.RateCount,
+                FavoriteCount = storyInfo.FavoriteCount,
                 TotalChapters = storyInfo.TotalChapters,
                 Genres = storyInfo.Genres,
                 Chapters = chaptersPaged
             };
+        }
+        public async Task<PagedResult<MyStoryDto>> GetMyStoriesAsync(GetMyStoriesQuery request, CancellationToken ct)
+        {
+            var query = _context.Set<Story>()
+                .AsNoTracking()
+                .Where(s => s.UserId == request.UserId);
+
+            if (!request.IsAdmin)
+            {
+                query = query.Where(s => s.Status != (int)StoryPublishStatus.Deleted);
+            }
+
+            return await query
+                .OrderByDescending(s => s.CreatedAt)
+                .Select(s => new MyStoryDto
+                {
+                    StoryId = s.StoryId,
+                    Title = s.Title,
+                    Slug = s.Slug,
+                    Thumbnail = s.ThumbnailUrl.ToFullUrl(),
+                    Status = (StoryPublishStatus)s.Status, 
+                    AdminLockStatus = s.AdminLockStatus, 
+                    AdminNote = s.AdminNote, 
+                    TotalView = s.TotalView,
+                    RateAvg = s.RateAvg,
+                    RateCount = s.Ratings.Count(),
+                    FavoriteCount = s.UserFavorites.Count(), 
+                    CreateAt = s.CreatedAt
+                })
+                .ToPagedListAsync(request.PageIndex, request.PageSize, ct);
         }
     }
 }

@@ -13,11 +13,13 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Manhwa.WebAPI.Controllers.Story
 {
@@ -289,6 +291,25 @@ namespace Manhwa.WebAPI.Controllers.Story
             if (result == null)
                 return NotFound(new { message = "Truyện không tồn tại hoặc đã bị ẩn khỏi hệ thống." });
 
+            return Ok(result);
+        }
+        [HttpGet("my_stories")]
+        [Authorize]
+        public async Task<IActionResult> GetMyStories([FromQuery] GetMyStoriesRequest request)
+        {
+            var userId = User.GetUserId();
+            if(userId == null)
+            {
+                Unauthorized();
+            }
+            var query = new GetMyStoriesQuery
+            {
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                UserId = (long)userId
+            };
+            query.IsAdmin = User.IsInRole("Admin");
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
 
