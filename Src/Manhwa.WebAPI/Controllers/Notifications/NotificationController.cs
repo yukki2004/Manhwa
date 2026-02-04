@@ -1,4 +1,5 @@
 ﻿using Manhwa.Application.Features.Notifications.Queries.GetNotifications;
+using Manhwa.Application.Features.Notifications.Queries.GetUnreadCount;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +31,15 @@ namespace Manhwa.WebAPI.Controllers.Notifications
             });
 
             return Ok(result);
+        }
+        [HttpGet("unread-count")]
+        [Authorize]
+        public async Task<IActionResult> GetUnreadCount()
+        {
+            var userId = User.GetUserId(); 
+            if (userId == null) return Unauthorized();
+            var count = await _mediator.Send(new GetUnreadCountQuery { UserId = (long)userId });
+            return Ok(new { unreadCount = count });
         }
     }
 }
