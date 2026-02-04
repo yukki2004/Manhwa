@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Features.Notifications.Command.MarkAsRead;
+﻿using Manhwa.Application.Features.Notifications.Command.MarkAllAsRead;
+using Manhwa.Application.Features.Notifications.Command.MarkAsRead;
 using Manhwa.Application.Features.Notifications.Queries.GetNotifications;
 using Manhwa.Application.Features.Notifications.Queries.GetUnreadCount;
 using Manhwa.WebAPI.Extensions;
@@ -48,6 +49,14 @@ namespace Manhwa.WebAPI.Controllers.Notifications
         {
             var userId = User.GetUserId();
             await _mediator.Send(new MarkAsReadCommand { UserId = (long)userId!, NotificationId = id });
+            return NoContent();
+        }
+        [HttpPatch("read-all")]
+        [Authorize]
+        public async Task<IActionResult> MarkAllAsRead()
+        {
+            var userId = User.GetUserId();
+            await _mediator.Send(new MarkAllAsReadCommand { UserId = (long)userId! });
             return NoContent();
         }
     }
