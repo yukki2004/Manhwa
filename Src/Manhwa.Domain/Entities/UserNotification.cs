@@ -12,6 +12,7 @@ namespace Manhwa.Domain.Entities
         public long NotificationId { get; set; }
         public bool IsRead { get; set; } 
         public DateTimeOffset? ReadAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         // Navigation properties
         public User User { get; set; } = null!;

@@ -26,7 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Features\Community\" />
-    <Folder Include="Features\Notifications\" />
+    <Folder Include="Features\Notifications\Queries\GetUnreadCount\" />
+    <Folder Include="Features\Notifications\Queries\MarkAsRead\" />
   </ItemGroup>
 
 </Project>

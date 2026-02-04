@@ -30,6 +30,12 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .HasColumnType("timestamptz")
                    .HasDefaultValueSql("now()");
 
+            builder.Property(un => un.CreatedAt)
+                    .HasColumnName("create_at")          
+                    .HasColumnType("timestamptz")        
+                    .HasDefaultValueSql("now()")         
+                    .ValueGeneratedOnAdd();
+
             // Relationships
             builder.HasOne(un => un.User)
                    .WithMany(u => u.UserNotifications)
