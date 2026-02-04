@@ -13,6 +13,7 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -271,6 +272,23 @@ namespace Manhwa.WebAPI.Controllers.Story
         public async Task<IActionResult> FilterStories([FromQuery] FilterStoriesQuery query)
         {
             var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("{slug}")]
+        public async Task<IActionResult> GetStoryDetail([FromRoute] string slug, [FromQuery] GetStoryDetailResquest request)
+        {
+            var query = new GetStoryDetailQuery
+            {
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Slug = slug,
+            };
+
+            var result = await _mediator.Send(query);
+
+            if (result == null)
+                return NotFound(new { message = "Truyện không tồn tại hoặc đã bị ẩn khỏi hệ thống." });
+
             return Ok(result);
         }
 

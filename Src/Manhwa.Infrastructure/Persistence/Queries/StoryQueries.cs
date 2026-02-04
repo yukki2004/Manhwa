@@ -3,15 +3,11 @@ using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.Domain.Entities;
 using Manhwa.Domain.Enums.Story;
 using Manhwa.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Manhwa.Infrastructure.Persistence.Queries
 {
@@ -121,6 +117,67 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     })
                     .ToList()
             }).ToPagedListAsync(request.PageIndex, request.PageSize, ct);
+        }
+
+        public async Task<StoryDetailResponse?> GetStoryDetailWithChaptersAsync(GetStoryDetailQuery request, CancellationToken ct)
+        {
+            var storyInfo = await _context.Set<Story>()
+                .AsNoTracking()
+                .Where(s => s.Slug == request.Slug && s.IsPublish == StoryPublishStatus.Published)
+                .Select(s => new {
+                    s.StoryId,
+                    s.Title,
+                    s.Slug,
+                    s.Description,
+                    s.Author,
+                    Thumbnail = s.ThumbnailUrl,
+                    s.RateAvg,
+                    s.ReleaseYear,
+                    s.CreatedAt,
+                    s.TotalView,
+                    s.RateCount,
+                    TotalChapters = s.Chapters.Count(), 
+                    Genres = s.StoryCategories.Select(sc => new CategoryStoryDetailDto
+                    {
+                        Name = sc.Category.Name,
+                        Slug = sc.Category.Slug,
+                    }).ToList() 
+                })
+                .FirstOrDefaultAsync(ct);
+
+            if (storyInfo == null) return null;
+
+            var chaptersPaged = await _context.Set<Chapter>()
+                .AsNoTracking()
+                .Where(c => c.StoryId == storyInfo.StoryId)
+                .OrderByDescending(c => c.ChapterNumber)
+                .Select(c => new ChapterItemDto
+                {
+                    ChapterId = c.ChapterId,
+                    ChapterNumber = c.ChapterNumber,
+                    Title = c.Title ?? $"Chương {c.ChapterNumber}",
+                    Slug = c.Slug,
+                    CreateAt = c.CreatedAt 
+                })
+                .ToPagedListAsync(request.PageIndex, request.PageSize, ct); 
+
+            return new StoryDetailResponse
+            {
+                StoryId = storyInfo.StoryId,
+                Title = storyInfo.Title,
+                Slug = storyInfo.Slug,
+                Description = storyInfo.Description,
+                Author = storyInfo.Author,
+                CreateAt = storyInfo.CreatedAt,
+                Realease_year = storyInfo.ReleaseYear,
+                TotalView = storyInfo.TotalView,
+                Thumbnail = storyInfo.Thumbnail.ToFullUrl(),
+                RateAvg = storyInfo.RateAvg,
+                RateCount = storyInfo.RateCount,
+                TotalChapters = storyInfo.TotalChapters,
+                Genres = storyInfo.Genres,
+                Chapters = chaptersPaged
+            };
         }
     }
 }
