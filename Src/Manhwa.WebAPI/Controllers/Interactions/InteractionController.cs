@@ -6,6 +6,8 @@ using Manhwa.Application.Features.Interactions.Command.PublishComment;
 using Manhwa.Application.Features.Interactions.Command.Rating;
 using Manhwa.Application.Features.Interactions.Command.Unfollow;
 using Manhwa.Application.Features.Interactions.Command.UpdateComment;
+using Manhwa.Application.Features.Interactions.Queries.GetComments;
+using Manhwa.Application.Features.Interactions.Queries.GetReplyComments;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -196,6 +198,53 @@ namespace Manhwa.WebAPI.Controllers.Interactions
                 Score = request.Score,
             };
             var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpGet("stories/{storySlug}/comments")]
+        public async Task<IActionResult> GetStoryComments(
+            [FromRoute] string storySlug,
+            [FromQuery] GetRootCommentRequest request)
+        {
+            var query = new GetRootCommentsQuery
+            {
+                StorySlug = storySlug,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+
+        [HttpGet("stories/{storySlug}/chapters/{chapterSlug}/comments")]
+        public async Task<IActionResult> GetChapterComments(
+            [FromRoute] string storySlug,
+            [FromRoute] string chapterSlug,
+            [FromQuery] GetRootCommentRequest request)
+        {
+            var query = new GetRootCommentsQuery
+            {
+                StorySlug = storySlug,
+                ChapterSlug = chapterSlug,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("comments/{parentId}/replies")]
+        public async Task<IActionResult> GetReplies([FromRoute] long parentId, [FromQuery] GetRepliesRequest request)
+        {
+            var query = new GetRepliesQuery
+            {
+                ParentId = parentId,
+                PageIndex = request.PageIndex,
+                PageSize= request.PageSize
+            };
+
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
     }
