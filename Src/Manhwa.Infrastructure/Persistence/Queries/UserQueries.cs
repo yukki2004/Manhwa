@@ -3,9 +3,11 @@ using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
+using Manhwa.Application.Features.Users.Management.Queries.GetUserLogs;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
 using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
 using Manhwa.Domain.Entities;
+using Manhwa.Domain.Enums;
 using Manhwa.Domain.Enums.Story;
 using Manhwa.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +110,32 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 });
 
             return await finalQuery.ToPagedListAsync(pageIndex, pageSize, ct);
+        }
+
+        public async Task<PagedResult<UserLogResponse>> GetPagedUserLogsAsync(
+        long userId, int pageIndex, int pageSize, UserLogAction? action, CancellationToken ct)
+        {
+            var query = _context.UserLogs
+                .AsNoTracking()
+                .Where(l => l.UserId == userId)
+                .OrderByDescending(l => l.CreatedAt)
+                .AsQueryable();
+
+            if (action.HasValue)
+            {
+                query = query.Where(l => l.Action == action.Value);
+            }
+
+            var projectedQuery = query.Select(l => new UserLogResponse
+            {
+                UserLogId = l.UserLogId,
+                Action = l.Action.ToString(), 
+                IpAddress = l.IpAddress,
+                UserAgent = l.UserAgent,
+                CreatedAt = l.CreatedAt
+            });
+
+            return await projectedQuery.ToPagedListAsync(pageIndex, pageSize, ct);
         }
 
     }
