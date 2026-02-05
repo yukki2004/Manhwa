@@ -33,6 +33,7 @@ namespace Manhwa.Domain.Entities
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
         public ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
+        public ICollection<Report> Reports { get; set; }= new List<Report>();
         public bool CheckLevelUp(int totalExpRequiredForNextLevel)
         {
             if (this.CurrentExp >= totalExpRequiredForNextLevel)

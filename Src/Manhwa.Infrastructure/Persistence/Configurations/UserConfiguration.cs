@@ -144,6 +144,11 @@ namespace Manhwa.Infrastructure.Persistence.Configurations
                    .WithOne(un => un.User)
                    .HasForeignKey(un => un.UserId)
                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(u => u.Reports)
+                .WithOne(r => r.User)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

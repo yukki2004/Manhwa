@@ -257,7 +257,7 @@ namespace Manhwa.WebAPI.Controllers.Story
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpPost("ranking")]
+        [HttpGet("ranking")]
         public async Task<IActionResult> GetRanking()
         {
             var command = new GetHomeRankingsQuery();

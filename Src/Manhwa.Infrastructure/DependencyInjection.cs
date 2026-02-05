@@ -9,6 +9,7 @@ using Manhwa.Application.Common.Interfaces;
 using Manhwa.Application.Common.Interfaces.Notifications;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Common.Interfaces.Ranking;
+using Manhwa.Application.Common.Interfaces.Report;
 using Manhwa.Domain.Repositories;
 using Manhwa.Infrastructure.BackgroundTasks;
 using Manhwa.Infrastructure.Caching;
@@ -22,6 +23,7 @@ using Manhwa.Infrastructure.Persistence.Queries;
 using Manhwa.Infrastructure.Persistence.Repositories;
 using Manhwa.Infrastructure.Rankings.Strategies;
 using Manhwa.Infrastructure.Realtime.Services;
+using Manhwa.Infrastructure.Reports;
 using Manhwa.Infrastructure.Security;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -179,6 +181,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IReadingHistoryRepository, ReadingHistoryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
             //Strategy pattern 
             services.AddScoped<IInteractionStrategy, ViewInteractionStrategy>();
             services.AddScoped<IInteractionStrategy, FollowInteractionStrategy>();
@@ -188,6 +191,10 @@ namespace Manhwa.Infrastructure
             services.AddScoped<INotificationStrategy, NewChapterStrategy>();
             services.AddScoped<INotificationStrategy, NewCommentOnStoryStrategy>();
             services.AddScoped<INotificationStrategy, CommentReplyStrategy>();
+            services.AddScoped<IReportTargetStrategy, ChapterReportStrategy>();
+            services.AddScoped<IReportTargetStrategy,  ChapterReportStrategy>();
+            services.AddScoped<IReportTargetStrategy, UserReportStrategy>();
+            services.AddScoped<IReportTargetStrategy, StoryReportStrategy>();
             // queries
             services.AddScoped<IUserQueries, UserQueries>();
             services.AddScoped<ICategoryQueries, CategoryQueries>();
