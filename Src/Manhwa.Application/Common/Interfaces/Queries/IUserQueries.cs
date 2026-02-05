@@ -1,5 +1,6 @@
 ﻿using Manhwa.Application.Common.Abstractions;
 using Manhwa.Application.Features.Users.Management.Queries.GetAllUsers;
+using Manhwa.Application.Features.Users.Management.Queries.GetUserExpLogs;
 using Manhwa.Application.Features.Users.Management.Queries.GetUserLogs;
 using Manhwa.Application.Features.Users.Profile.Queries.GetFavorites;
 using Manhwa.Application.Features.Users.Profile.Queries.GetReadingHistory;
@@ -20,5 +21,6 @@ namespace Manhwa.Application.Common.Interfaces.Queries
         Task<PagedResult<ReadingHistoryDto>> GetPagedReadingHistoryAsync(
             long userId, int pageIndex, int pageSize, CancellationToken ct);
         Task<PagedResult<UserLogResponse>> GetPagedUserLogsAsync(long userId, int pageIndex, int pageSize, UserLogAction? action, CancellationToken ct);
+        Task<PagedResult<ExpLogResponse>> GetPagedExpLogsAsync(long userId, int pageIndex, int pageSize, ExpActionType? action, CancellationToken ct);
     }
 }
