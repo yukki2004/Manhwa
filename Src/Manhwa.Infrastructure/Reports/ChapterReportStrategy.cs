@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Common.Interfaces.Report;
+﻿using Manhwa.Application.Common.Extensions;
+using Manhwa.Application.Common.Interfaces.Report;
 using Manhwa.Domain.Entities;
 using Manhwa.Domain.Enums.Report;
 using Manhwa.Infrastructure.Persistence;
@@ -28,7 +29,7 @@ namespace Manhwa.Infrastructure.Reports
 
             return ($"{chapter?.StoryTitle} - {chapter?.Title}",
                     $"/truyen/{chapter?.StorySlug}/{chapter?.Slug}",
-                    chapter?.ThumbnailUrl);
+                    chapter?.ThumbnailUrl.ToFullUrl());
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Manhwa.Application.Features.Reports.Command.CreateReport;
+﻿using Manhwa.Application.Common.Abstractions;
+using Manhwa.Application.Features.Reports.Command.CreateReport;
+using Manhwa.Application.Features.Reports.Queries.GetReport;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +36,13 @@ namespace Manhwa.WebAPI.Controllers.Reports
             var result = await _mediator.Send(command);
             return Ok(result);
 
+        }
+        [HttpGet("admin")]
+        [Authorize(Roles = "Admin")] 
+        public async Task<IActionResult> GetAdminReports([FromQuery] GetReportsQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 }

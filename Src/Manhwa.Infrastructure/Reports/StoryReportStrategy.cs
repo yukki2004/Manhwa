@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Common.Interfaces.Report;
+﻿using Manhwa.Application.Common.Extensions;
+using Manhwa.Application.Common.Interfaces.Report;
 using Manhwa.Domain.Entities;
 using Manhwa.Domain.Enums.Report;
 using Manhwa.Infrastructure.Persistence;
@@ -25,7 +26,7 @@ namespace Manhwa.Infrastructure.Reports
                 .Select(s => new { s.Title, s.Slug, s.ThumbnailUrl })
                 .FirstOrDefaultAsync(ct);
 
-            return (story?.Title ?? "N/A", $"/truyen/{story?.Slug}", story?.ThumbnailUrl);
+            return (story?.Title ?? "N/A", $"/truyen/{story?.Slug}", story?.ThumbnailUrl.ToFullUrl());
         }
     }
 }

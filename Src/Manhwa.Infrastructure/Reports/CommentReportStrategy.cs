@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Common.Interfaces.Report;
+﻿using Manhwa.Application.Common.Extensions;
+using Manhwa.Application.Common.Interfaces.Report;
 using Manhwa.Domain.Enums.Report;
 using Manhwa.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace Manhwa.Infrastructure.Reports
 
             string contentSnippet = comment?.Content?.Length > 30 ? comment.Content[..30] + "..." : comment?.Content ?? "N/A";
 
-            return (contentSnippet, url, comment?.User?.Avatar);
+            return (contentSnippet, url, comment?.User?.Avatar.ToFullUrl());
         }
     }
 }

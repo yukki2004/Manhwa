@@ -102,6 +102,7 @@ namespace Manhwa.Infrastructure.Persistence.Repositories
                             u.Username,
                             u.Email,
                             u.Role,
+                            u.Avatar,
                             SnapshotAt = DateTimeOffset.UtcNow,
                         })
                         .FirstOrDefaultAsync(ct);

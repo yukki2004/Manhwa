@@ -31,6 +31,7 @@ namespace Manhwa.Infrastructure.Persistence
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<ExpAction> ExpActions { get; set; }
         public DbSet<LevelExp> LevelExps { get; set; }
+        public DbSet<Report> Reports { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

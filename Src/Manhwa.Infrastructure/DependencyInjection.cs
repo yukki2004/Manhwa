@@ -202,6 +202,7 @@ namespace Manhwa.Infrastructure
             services.AddScoped<IStoryQueries, StoryQueries>();
             services.AddScoped<IInteractionQueries, InteractionQueries>();
             services.AddScoped<INotificationQueries, NotificationQueries>();
+            services.AddScoped<IReportQueries, ReportQueries>();
             // background
             services.AddHostedService<ViewSyncWorker>();
             return services;

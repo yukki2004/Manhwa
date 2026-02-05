@@ -1,4 +1,5 @@
-﻿using Manhwa.Application.Common.Interfaces.Report;
+﻿using Manhwa.Application.Common.Extensions;
+using Manhwa.Application.Common.Interfaces.Report;
 using Manhwa.Domain.Enums.Report;
 using Manhwa.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Manhwa.Infrastructure.Reports
                 .Select(u => new { u.Username, u.Avatar })
                 .FirstOrDefaultAsync(ct);
 
-            return (user?.Username ?? "N/A", $"/user/{user?.Username}", user?.Avatar);
+            return (user?.Username ?? "N/A", $"/user/{user?.Username}", user?.Avatar.ToFullUrl());
         }
     }
 }
