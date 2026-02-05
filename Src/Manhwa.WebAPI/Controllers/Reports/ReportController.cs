@@ -1,5 +1,6 @@
 ﻿using Manhwa.Application.Common.Abstractions;
 using Manhwa.Application.Features.Reports.Command.CreateReport;
+using Manhwa.Application.Features.Reports.Command.ProcessReport;
 using Manhwa.Application.Features.Reports.Queries.GetReport;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
@@ -44,5 +45,17 @@ namespace Manhwa.WebAPI.Controllers.Reports
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+        [HttpPatch("reject/{reportId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RejectReport([FromRoute] long reportId)
+        {
+            var commnad = new ProcessReportCommand
+            {
+                ReportId = reportId,
+            };
+            var result = await _mediator.Send(commnad);
+            return Ok(result);
+        }
+
     }
 }
