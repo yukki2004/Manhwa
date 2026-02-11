@@ -23,6 +23,8 @@ namespace Manhwa.Application
                 // Đăng ký Behavior này để nó chạy trước mọi Handler
                 cfg.AddBehavior(typeof(IPipelineBehavior<, >), typeof(ValidationBehavior<, >));
             });
+            services.AddHttpClient();
+
 
             return services;
         }

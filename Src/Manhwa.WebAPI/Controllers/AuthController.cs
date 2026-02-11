@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Manhwa.Application.Features.Users.Auth.Commands.Logout;
 using System.Security.Claims;
 using Manhwa.Application.Features.Users.Auth.Commands.ForgotPassword;
+using Manhwa.Application.Features.Users.Auth.Commands.GoogleLogin;
 namespace Manhwa.WebAPI.Controllers
 {
     [ApiController]
@@ -124,10 +125,12 @@ namespace Manhwa.WebAPI.Controllers
         {
             var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
             var refreshToken = Request.Cookies["refreshToken"];
+
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Unauthorized(new { Message = "Phiên đăng nhập không tồn tại." });
             }
+
             var command = new LogoutCommand
             {
                 UserId = userId,
@@ -137,8 +140,17 @@ namespace Manhwa.WebAPI.Controllers
             };
             await _mediator.Send(command);
 
-            Response.Cookies.Delete("accessToken", new CookieOptions { Path = "/" });
-            Response.Cookies.Delete("refreshToken", new CookieOptions { Path = "/" });
+            var cookieOptions = new CookieOptions
+            {
+                Path = "/",
+                HttpOnly = true,
+                Secure = true,                 
+                SameSite = SameSiteMode.None,    
+                Expires = DateTimeOffset.UtcNow.AddDays(-1)
+            };
+
+            Response.Cookies.Delete("accessToken", cookieOptions);
+            Response.Cookies.Delete("refreshToken", cookieOptions);
 
             return Ok(new { Message = "Đã đăng xuất thành công." });
         }
@@ -191,6 +203,41 @@ namespace Manhwa.WebAPI.Controllers
             {
                 return BadRequest(new { Message = "Đặt lại mật khẩu thất bại." });
             }
+        }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            var command = new GoogleLoginCommand
+            {
+                IdToken = request.IdToken,
+                IpAddress = HttpContext.GetRemoteIpAddress(),
+                UserAgent = Request.Headers["User-Agent"].ToString()
+            };
+
+            var result = await _mediator.Send(command);
+
+            var accessCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, 
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            };
+
+            var refreshCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/",
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            Response.Cookies.Append("accessToken", result.AccessToken, accessCookieOptions);
+            Response.Cookies.Append("refreshToken", result.RefreshToken, refreshCookieOptions);
+
+            return Ok(new { result.UserId, result.Username, result.Email });
         }
     }
 }
