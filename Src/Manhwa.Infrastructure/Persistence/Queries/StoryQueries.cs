@@ -139,12 +139,22 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     s.Status,
                     s.RateCount,
                     FavoriteCount = s.UserFavorites.Count(),
-                    TotalChapters = s.Chapters.Count(), 
+                    TotalChapters = s.Chapters.Count(),
                     Genres = s.StoryCategories.Select(sc => new CategoryStoryDetailDto
                     {
                         Name = sc.Category.Name,
                         Slug = sc.Category.Slug,
-                    }).ToList() 
+                    }).ToList(),
+
+                    CurrentUserRating = request.UserId.HasValue
+                        ? s.Ratings.Where(r => r.UserId == request.UserId.Value)
+                                   .Select(r => r.Score)
+                                   .FirstOrDefault()
+                        : (int?)null,
+
+                    IsFavorite = request.UserId.HasValue
+                        ? s.UserFavorites.Any(f => f.UserId == request.UserId.Value)
+                        : false
                 })
                 .FirstOrDefaultAsync(ct);
 
@@ -160,9 +170,9 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     ChapterNumber = c.ChapterNumber,
                     Title = c.Title ?? $"Chương {c.ChapterNumber}",
                     Slug = c.Slug,
-                    CreateAt = c.CreatedAt 
+                    CreateAt = c.CreatedAt
                 })
-                .ToPagedListAsync(request.PageIndex, request.PageSize, ct); 
+                .ToPagedListAsync(request.PageIndex, request.PageSize, ct);
 
             return new StoryDetailResponse
             {
@@ -181,7 +191,9 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 FavoriteCount = storyInfo.FavoriteCount,
                 TotalChapters = storyInfo.TotalChapters,
                 Genres = storyInfo.Genres,
-                Chapters = chaptersPaged
+                Chapters = chaptersPaged,
+                CurrentUserRating = storyInfo.CurrentUserRating > 0 ? storyInfo.CurrentUserRating : null,
+                IsFavorite = storyInfo.IsFavorite
             };
         }
         public async Task<PagedResult<MyStoryDto>> GetMyStoriesAsync(GetMyStoriesQuery request, CancellationToken ct)

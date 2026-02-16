@@ -22,7 +22,7 @@ namespace Manhwa.Infrastructure.Notifications.Strategies
             return (
                 Title: "🆕 Truyện mới cập bến!",
                 Content: $"Siêu phẩm '{storyTitle}' vừa được đăng tải. Khám phá ngay!",
-                RedirectUrl: $"/story/{slug}"
+                RedirectUrl: $"/truyen/{slug}"
             );
         }
     }

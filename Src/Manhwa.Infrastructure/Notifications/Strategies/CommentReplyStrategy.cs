@@ -23,7 +23,7 @@ namespace Manhwa.Infrastructure.Notifications.Strategies
             return (
                 Title: "Phản hồi mới 💬",
                 Content: $"{replierName} đã trả lời bình luận của bạn trong truyện \"{storyTitle}\".",
-                RedirectUrl: $"/story/{slug}"
+                RedirectUrl: $"/truyen/{slug}"
             );
         }
     }

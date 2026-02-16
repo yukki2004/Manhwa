@@ -22,7 +22,7 @@ namespace Manhwa.Infrastructure.Notifications.Strategies
             return (
                 Title: "Thông báo!",
                 Content: $"Truyện của bạn '{storyTitle}' đã {reason} với lí do: {adminNote}",
-                RedirectUrl: $"/story/{slug}"
+                RedirectUrl: $"/truyen/{slug}"
             );
         }
 

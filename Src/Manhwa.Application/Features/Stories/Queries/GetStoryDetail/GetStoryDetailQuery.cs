@@ -11,5 +11,6 @@ namespace Manhwa.Application.Features.Stories.Queries.GetStoryDetail
     public class GetStoryDetailQuery : PagingParamUsers, IRequest<StoryDetailResponse?>
     {
         public string Slug { get; set; } = null!;
+        public long? UserId { get; set; } 
     }
 }

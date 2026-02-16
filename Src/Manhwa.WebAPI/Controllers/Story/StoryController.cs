@@ -279,11 +279,13 @@ namespace Manhwa.WebAPI.Controllers.Story
         [HttpGet("{slug}")]
         public async Task<IActionResult> GetStoryDetail([FromRoute] string slug, [FromQuery] GetStoryDetailResquest request)
         {
+            var userId = User.GetUserId();
             var query = new GetStoryDetailQuery
             {
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 Slug = slug,
+                UserId = userId
             };
 
             var result = await _mediator.Send(query);

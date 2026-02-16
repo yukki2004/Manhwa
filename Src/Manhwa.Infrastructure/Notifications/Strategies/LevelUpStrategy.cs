@@ -20,7 +20,7 @@ namespace Manhwa.Infrastructure.Notifications.Strategies
             return (
                 Title: "Thăng cấp thành công! 🎉",
                 Content: $"Chúc mừng! Bạn đã đạt đến cấp độ {newLevel}. Tiếp tục đọc truyện để nhận thêm EXP nhé!",
-                RedirectUrl: "/profile"
+                RedirectUrl: "/ho-so"
             );
         }
     }

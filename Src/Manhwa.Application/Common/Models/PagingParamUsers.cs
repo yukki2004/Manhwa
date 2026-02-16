@@ -13,7 +13,7 @@ namespace Manhwa.Application.Common.Models
         public int PageSize
         {
             get => _pageSize;
-            set => _pageSize = (value > 20) ? 20 : (value <= 0 ? 10 : value);
+            set => _pageSize = (value > 5000) ? 5000 : (value <= 0 ? 10 : value);
         }
     }
 }

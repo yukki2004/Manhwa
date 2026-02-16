@@ -26,5 +26,7 @@ namespace Manhwa.Application.Features.Stories.Queries.GetStoryDetail
         public DateTimeOffset CreateAt { get; set; }
         public List<CategoryStoryDetailDto> Genres { get; init; } = new();
         public PagedResult<ChapterItemDto> Chapters { get; init; } = null!;
+        public int? CurrentUserRating { get; init; }
+        public bool IsFavorite { get; init; }
     }
 }
