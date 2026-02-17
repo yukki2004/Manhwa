@@ -3,6 +3,7 @@ using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces.Queries;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetHotStories;
 using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.Domain.Entities;
@@ -225,6 +226,25 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     CreateAt = s.CreatedAt
                 })
                 .ToPagedListAsync(request.PageIndex, request.PageSize, ct);
+        }
+        public async Task<List<HotStoryDto>> GetAllHotStoriesAsync(CancellationToken ct)
+        {
+            return await _context.Stories
+                .AsNoTracking() 
+                .Where(s => s.IsHot && s.IsPublish == StoryPublishStatus.Published) 
+                .OrderByDescending(s => s.UpdatedAt) 
+                .Select(s => new HotStoryDto
+                {
+                    StoryId = s.StoryId,
+                    Title = s.Title, 
+                    Slug = s.Slug, 
+                    Description = s.Description,
+                    ThumbnailUrl = s.ThumbnailUrl,
+                    TotalView = s.TotalView,
+                    RateAvg = s.RateAvg,
+                    FollowCount = s.FollowCount 
+                })
+                .ToListAsync(ct);
         }
     }
 }

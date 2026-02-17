@@ -15,6 +15,7 @@ using Manhwa.Application.Features.Stories.Command.UpdateStoryStatus.OngingStory;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeRankings;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetHotStories;
 using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using Manhwa.WebAPI.Extensions;
@@ -338,7 +339,12 @@ namespace Manhwa.WebAPI.Controllers.Story
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-
+        [HttpGet("hot")]
+        public async Task<IActionResult> GetHotStories()
+        {
+            var result = await _mediator.Send(new GetHotStoriesQuery());
+            return Ok(result);
+        }
 
 
     }

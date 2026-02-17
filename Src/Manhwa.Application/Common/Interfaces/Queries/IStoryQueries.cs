@@ -1,6 +1,7 @@
 ﻿using Manhwa.Application.Common.Abstractions;
 using Manhwa.Application.Features.Stories.Queries.GetFilteredStories;
 using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
+using Manhwa.Application.Features.Stories.Queries.GetHotStories;
 using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
 using System;
@@ -17,5 +18,6 @@ namespace Manhwa.Application.Common.Interfaces.Queries
         Task<PagedResult<FilteredStoryDto>> GetFilteredStoriesAsync(FilterStoriesQuery request, CancellationToken ct);
         Task<StoryDetailResponse?> GetStoryDetailWithChaptersAsync(GetStoryDetailQuery request, CancellationToken ct);
         Task<PagedResult<MyStoryDto>> GetMyStoriesAsync(GetMyStoriesQuery request, CancellationToken ct);
+        Task<List<HotStoryDto>> GetAllHotStoriesAsync(CancellationToken ct);
     }
 }
