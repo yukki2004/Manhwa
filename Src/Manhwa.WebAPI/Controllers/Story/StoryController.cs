@@ -1,5 +1,7 @@
 ﻿using Manhwa.Application.Features.Stories.Command.AdminModeration.LockStory;
+using Manhwa.Application.Features.Stories.Command.AdminModeration.MarkStoryHot;
 using Manhwa.Application.Features.Stories.Command.AdminModeration.UnLockStory;
+using Manhwa.Application.Features.Stories.Command.AdminModeration.UnmarkStoryHot;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.DeleteStory;
 using Manhwa.Application.Features.Stories.Command.ChangePublishState.HideStory;
@@ -314,6 +316,29 @@ namespace Manhwa.WebAPI.Controllers.Story
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+        [HttpPatch("{storyId}/set-hot")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Sethot([FromRoute] long storyId)
+        {
+            var command = new MarkStoryHotCommand
+            {
+                StoryId = storyId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpPatch("{storyId}/unset-hot")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UnSetHot([FromRoute] long storyId)
+        {
+            var command = new UnmarkStoryHotCommand
+            {
+                StoryId = storyId
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
 
 
     }
