@@ -6,7 +6,9 @@ using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.Application.Features.Stories.Queries.GetHotStories;
 using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
+using Manhwa.Application.Features.Stories.Queries.GetStoryManagementDetail;
 using Manhwa.Domain.Entities;
+using Manhwa.Domain.Enums.Chapter;
 using Manhwa.Domain.Enums.Story;
 using Manhwa.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -239,12 +241,87 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     Title = s.Title, 
                     Slug = s.Slug, 
                     Description = s.Description,
-                    ThumbnailUrl = s.ThumbnailUrl,
+                    ThumbnailUrl = s.ThumbnailUrl.ToFullUrl(),
                     TotalView = s.TotalView,
                     RateAvg = s.RateAvg,
                     FollowCount = s.FollowCount 
                 })
                 .ToListAsync(ct);
+        }
+        public async Task<StoryManagementDetailResponse?> GetStoryManagementDetailAsync(GetStoryManagementDetailQuery request, CancellationToken ct)
+        {
+            var query = _context.Set<Story>().AsNoTracking().Where(s => s.StoryId == request.StoryId);
+
+            if (!request.IsAdmin)
+            {
+                query = query.Where(s => s.IsPublish != StoryPublishStatus.Deleted);
+            }
+
+            var storyData = await query.Select(s => new
+            {
+                s.StoryId,
+                s.Title,
+                s.Slug,
+                s.Description,
+                s.ThumbnailUrl,
+                s.Author,
+                s.ReleaseYear,
+                s.TotalView,
+                s.FollowCount,
+                s.RateAvg,
+                StatusText = s.Status.ToString(), 
+                PublishStatusText = s.IsPublish.ToString(),
+                LockStatusText = s.AdminLockStatus.ToString(),
+                FavoriteCount = s.UserFavorites.Count(),
+                Genres = s.StoryCategories.Select(sc => sc.Category.Name).ToList(),
+                TotalChaptersCount = s.Chapters.Count()
+            }).FirstOrDefaultAsync(ct);
+
+            if (storyData == null) return null;
+
+            var chapterQuery = _context.Set<Chapter>()
+                .AsNoTracking()
+                .Where(c => c.StoryId == request.StoryId);
+
+            if (!request.IsAdmin)
+            {
+                chapterQuery = chapterQuery.Where(c => c.Status != ChapterStatus.Deleted);
+            }
+
+            var pagedChapters = await chapterQuery
+                .OrderByDescending(c => c.ChapterNumber)
+                .Select(c => new ChapterManagementItemDto
+                {
+                    ChapterId = c.ChapterId,
+                    ChapterNumber = c.ChapterNumber,
+                    Title = c.Title ?? $"Chương {c.ChapterNumber}",
+                    Slug = c.Slug,
+                    TotalView = c.TotalView,
+                    Status = c.Status.ToString() ?? "Unknown", 
+                    CreatedAt = c.CreatedAt
+                })
+                .ToPagedListAsync(request.PageIndex, request.PageSize, ct);
+
+            return new StoryManagementDetailResponse
+            {
+                StoryId = storyData.StoryId,
+                Title = storyData.Title,
+                Slug = storyData.Slug,
+                Description = storyData.Description,
+                Thumbnail = storyData.ThumbnailUrl.ToFullUrl(),
+                Author = storyData.Author,
+                ReleaseYear = storyData.ReleaseYear,
+                Status = storyData.StatusText,
+                PublishStatus = storyData.PublishStatusText,
+                LockStatus = storyData.LockStatusText,
+                TotalView = storyData.TotalView,
+                FollowCount = storyData.FollowCount,
+                RateAvg = storyData.RateAvg,
+                FavoriteCount = storyData.FavoriteCount,
+                TotalChapters = storyData.TotalChaptersCount,
+                Genres = storyData.Genres,
+                Chapters = pagedChapters
+            };
         }
     }
 }

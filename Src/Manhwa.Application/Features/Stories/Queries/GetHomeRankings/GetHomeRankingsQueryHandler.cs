@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime.Internal;
+using Manhwa.Application.Common.Extensions;
 using Manhwa.Application.Common.Interfaces;
 using Manhwa.Domain.Enums;
 using Manhwa.Domain.Repositories;
@@ -67,7 +68,7 @@ namespace Manhwa.Application.Features.Stories.Queries.GetHomeRankings
                     Title = s.Title,
                     Slug = s.Slug,
                     Release = s.ReleaseYear,
-                    Thumbnail = s.ThumbnailUrl,
+                    Thumbnail = s.ThumbnailUrl.ToFullUrl(),
 
                 })
                 .ToList();

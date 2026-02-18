@@ -18,6 +18,7 @@ using Manhwa.Application.Features.Stories.Queries.GetHomeStories;
 using Manhwa.Application.Features.Stories.Queries.GetHotStories;
 using Manhwa.Application.Features.Stories.Queries.GetMyStories;
 using Manhwa.Application.Features.Stories.Queries.GetStoryDetail;
+using Manhwa.Application.Features.Stories.Queries.GetStoryManagementDetail;
 using Manhwa.WebAPI.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -343,6 +344,31 @@ namespace Manhwa.WebAPI.Controllers.Story
         public async Task<IActionResult> GetHotStories()
         {
             var result = await _mediator.Send(new GetHotStoriesQuery());
+            return Ok(result);
+        }
+        [HttpGet("{id}/management-detail")]
+        public async Task<IActionResult> GetManagementDetail(
+            long id,
+            [FromQuery] int pageIndex = 1,
+            [FromQuery] int pageSize = 30)
+        {
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            bool isAdmin = userRole == "Admin";
+
+            var query = new GetStoryManagementDetailQuery
+            {
+                StoryId = id,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                IsAdmin = isAdmin 
+            };
+
+            var result = await _mediator.Send(query);
+
+            if (result == null)
+            {
+                return NotFound(new { Message = "Không tìm thấy tác phẩm hoặc bạn không có quyền truy cập." });
+            }
             return Ok(result);
         }
 
