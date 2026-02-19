@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+**/bin/
+**/obj/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# Logs
+*.log
+
+# Env (nếu bạn inject từ runtime)
+.env
+.env.*

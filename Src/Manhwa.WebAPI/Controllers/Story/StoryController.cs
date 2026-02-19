@@ -347,11 +347,13 @@ namespace Manhwa.WebAPI.Controllers.Story
             return Ok(result);
         }
         [HttpGet("{id}/management-detail")]
+        [Authorize]
         public async Task<IActionResult> GetManagementDetail(
             long id,
             [FromQuery] int pageIndex = 1,
             [FromQuery] int pageSize = 30)
         {
+            var userId = User.GetUserId();
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             bool isAdmin = userRole == "Admin";
 
@@ -360,7 +362,8 @@ namespace Manhwa.WebAPI.Controllers.Story
                 StoryId = id,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                IsAdmin = isAdmin 
+                IsAdmin = isAdmin,
+                CurrentUserId = userId
             };
 
             var result = await _mediator.Send(query);

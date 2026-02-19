@@ -218,7 +218,7 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                     Title = s.Title,
                     Slug = s.Slug,
                     Thumbnail = s.ThumbnailUrl.ToFullUrl(),
-                    Status = (StoryPublishStatus)s.Status, 
+                    Status = (StoryPublishStatus)s.IsPublish, 
                     AdminLockStatus = s.AdminLockStatus, 
                     AdminNote = s.AdminNote, 
                     TotalView = s.TotalView,
@@ -254,6 +254,8 @@ namespace Manhwa.Infrastructure.Persistence.Queries
 
             if (!request.IsAdmin)
             {
+                query = query.Where(s => s.UserId == request.CurrentUserId);
+
                 query = query.Where(s => s.IsPublish != StoryPublishStatus.Deleted);
             }
 
@@ -269,7 +271,7 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 s.TotalView,
                 s.FollowCount,
                 s.RateAvg,
-                StatusText = s.Status.ToString(), 
+                StatusText = s.Status.ToString(),
                 PublishStatusText = s.IsPublish.ToString(),
                 LockStatusText = s.AdminLockStatus.ToString(),
                 FavoriteCount = s.UserFavorites.Count(),

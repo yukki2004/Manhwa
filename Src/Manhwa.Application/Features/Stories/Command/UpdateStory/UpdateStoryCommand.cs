@@ -17,6 +17,6 @@ namespace Manhwa.Application.Features.Stories.Command.UpdateStory
         public string Description { get; set; } = null!;
         public string? AuthorName { get; set; }
         public int? ReleaseYear { get; set; }
-        public List<int> CategoryIds { get; set; } = new();
+        public List<int>? CategoryIds { get; set; } = new();
     }
 }

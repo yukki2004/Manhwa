@@ -15,7 +15,6 @@ namespace Manhwa.Application.Features.Stories.Queries.GetMyStories
         public string Slug { get; set; } = null!;
         public string? Thumbnail { get; set; }
         public StoryPublishStatus Status { get; set; }
-
         public AdminLockStatus AdminLockStatus { get; set; }
         public string? AdminNote { get; set; }
         public decimal RateAvg { get; init; }

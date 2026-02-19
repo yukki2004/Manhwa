@@ -11,6 +11,7 @@ namespace Manhwa.Application.Features.Stories.Queries.GetStoryManagementDetail
     public class GetStoryManagementDetailQuery : PagingParamUsers, IRequest<StoryManagementDetailResponse?>
     {
         public long StoryId { get; set; }
+        public long? CurrentUserId { get; set; } 
         public bool IsAdmin { get; set; } 
     }
 }

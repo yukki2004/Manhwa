@@ -17,18 +17,15 @@ namespace Manhwa.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             UrlHelper.BaseUrl = builder.Configuration["ApiBaseUrl"];
             builder.Services.AddCors(options => {
-                options.AddPolicy("AllowTestClient", policy => {
-                    policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:5173") 
+                options.AddPolicy("AllowAllWithCookies", policy => {
+                    policy.SetIsOriginAllowed(origin => true) 
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials(); 
@@ -37,18 +34,15 @@ namespace Manhwa.WebAPI
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            app.UseCors("AllowTestClient");
+            app.UseCors("AllowAllWithCookies");
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMiddleware<IdentityMiddleware>();
