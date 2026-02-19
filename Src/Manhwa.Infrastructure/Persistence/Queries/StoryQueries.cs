@@ -106,7 +106,7 @@ namespace Manhwa.Infrastructure.Persistence.Queries
                 RateAvg = s.RateAvg,
                 Author = s.Author,
                 ShortDescription = s.Description != null && s.Description.Length > 150
-                    ? s.Description.Substring(0, 150) + "..."
+                    ? s.Description
                     : s.Description,
                 Genres = s.StoryCategories.Select(sc => sc.Category.Name).ToList(),
                 RecentChapters = s.Chapters
