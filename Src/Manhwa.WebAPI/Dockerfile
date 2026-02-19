@@ -1,11 +1,11 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["Manhwa.WebAPI/Manhwa.WebAPI.csproj", "Manhwa.WebAPI/"]
-COPY ["Manhwa.Infrastructure/Manhwa.Infrastructure.csproj", "Manhwa.Infrastructure/"]
-COPY ["Manhwa.Application/Manhwa.Application.csproj", "Manhwa.Application/"]
-COPY ["Manhwa.Domain/Manhwa.Domain.csproj", "Manhwa.Domain/"]
+COPY ["Src/Manhwa.WebAPI/Manhwa.WebAPI.csproj", "Manhwa.WebAPI/"]
+COPY ["Src/Manhwa.Infrastructure/Manhwa.Infrastructure.csproj", "Manhwa.Infrastructure/"]
+COPY ["Src/Manhwa.Application/Manhwa.Application.csproj", "Manhwa.Application/"]
+COPY ["Src/Manhwa.Domain/Manhwa.Domain.csproj", "Manhwa.Domain/"]
 
-RUN dotnet restore "Manhwa.WebAPI/Manhwa.WebAPI.csproj"
+RUN dotnet restore "Src/Manhwa.WebAPI/Manhwa.WebAPI.csproj"
 
 COPY . .
 WORKDIR "/src/Manhwa.WebAPI"
