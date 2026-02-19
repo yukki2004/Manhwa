@@ -64,8 +64,8 @@ jobs:
           script: |
             cd /var/www/backend-manhwa
             # Kéo image mới về
-            sudo docker-compose pull backend
+            sudo docker compose pull backend
             # Chỉ khởi động lại backend và rabbitmq, không ảnh hưởng frontend khác
-            sudo docker-compose up -d --remove-orphans
+            sudo docker compose up -d --remove-orphans
             # Dọn dẹp các image cũ không còn dùng (tiết kiệm bộ nhớ VPS)
             sudo docker image prune -f
