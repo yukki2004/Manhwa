@@ -43,12 +43,12 @@ namespace Manhwa.WebAPI
             });
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseCors("AllowAllWithCookies");
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); 
             app.UseAuthentication();
             app.UseMiddleware<IdentityMiddleware>();
             app.UseAuthorization();
             app.MapHub<NotificationHub>("/hubs/notifications");
-            app.MapControllers();
+            app.MapControllers(); 
             app.Run();
         }
     }
