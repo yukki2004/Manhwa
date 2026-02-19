@@ -68,4 +68,4 @@ jobs:
             # Chỉ khởi động lại backend và rabbitmq, không ảnh hưởng frontend khác
             sudo docker-compose up -d --remove-orphans
             # Dọn dẹp các image cũ không còn dùng (tiết kiệm bộ nhớ VPS)
-            docker image prune -f
+            sudo docker image prune -f
